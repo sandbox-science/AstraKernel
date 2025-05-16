@@ -1,5 +1,5 @@
 OUT_DIR = build/
-SRC_DIR = src/
+SRC_DIR = kernel/
 
 CROSS_COMPILE = arm-none-eabi-
 AS     = $(CROSS_COMPILE)gcc
