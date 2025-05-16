@@ -11,11 +11,11 @@ A minimal experimental kernel written in C and ARM assembly, designed to run on 
 
 ## File Overview
 
-- **src/start.s**  
+- **kernel/start.s**  
   ARM assembly startup code. Sets up the stack, zeros the `.bss` section, and jumps to the C kernel.
-- **src/kernel.c**  
+- **kernel/kernel.c**  
   Kernel entry point and basic I/O functions for UART communication.
-- **src/kernel.ld**  
+- **kernel/kernel.ld**  
   Linker script to correctly map program sections in memory.
 
 ## How It Works
