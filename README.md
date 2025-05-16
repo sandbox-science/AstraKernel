@@ -2,6 +2,19 @@
 
 A minimal experimental kernel written in C and ARM assembly, designed to run on QEMU's VersatilePB (ARM926E) emulated platform. This project currently demonstrates how to bootstrap a system, set up the stack, zero the `.bss` section, and perform basic UART output (printing text to the serial console).
 
+```bash
+========================================
+  AstraKernel  v0.1.0
+  Built May 15 2025 at 22:58:58
+========================================
+
+  CPU: ARM926EJ-S @ 200MHz (simulated)
+  RAM: 128MB SDRAM at 0x00000000
+
+Welcome to your own little Astra world!
+Type away, explore, have fun.
+```
+
 ## Features so far
 
 - Simple ARM assembly startup code
