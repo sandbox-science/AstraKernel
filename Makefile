@@ -1,34 +1,46 @@
-OUT_DIR = build/
-SRC_DIR = kernel/
+OUT_DIR    := build/
+SRC_DIRS   := kernel user
 
-CROSS_COMPILE = arm-none-eabi-
-AS     = $(CROSS_COMPILE)gcc
-CC     = $(CROSS_COMPILE)gcc
-LD     = $(CROSS_COMPILE)ld
-OBJCOPY= $(CROSS_COMPILE)objcopy
+# 1) Find every .c in those dirs
+SRCS       := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))
+# 2) Strip their paths and map .c → build/*.o
+OBJS       := $(patsubst %.c,$(OUT_DIR)%.o,$(notdir $(SRCS)))
 
-CFLAGS = -ffreestanding -nostdlib -nostartfiles -O2 -Wall -Wextra
-LDFLAGS = -T $(SRC_DIR)kernel.ld
+CROSS_COMPILE := arm-none-eabi-
+AS            := $(CROSS_COMPILE)gcc
+CC            := $(CROSS_COMPILE)gcc
+LD            := $(CROSS_COMPILE)ld
+OBJCOPY       := $(CROSS_COMPILE)objcopy
+
+CFLAGS      := -ffreestanding -nostdlib -nostartfiles -O2 -Wall -Wextra
+LDFLAGS     := -T kernel/kernel.ld
+
+# Tell make to look for .c in these dirs:
+VPATH       := $(SRC_DIRS)
 
 all: clean kernel.bin qemu
 
-start.o: $(SRC_DIR)start.S
+# Assembly start.o goes to build/
+$(OUT_DIR)start.o: kernel/start.S
 	@mkdir -p $(OUT_DIR)
-	$(AS) -c $< -o $(OUT_DIR)$@
+	$(AS) -c $< -o $@
 
-kernel.o: $(SRC_DIR)kernel.c
-	$(CC) $(CFLAGS) -c $< -o $(OUT_DIR)$@
+# Pattern rule for any .c → build/*.o
+$(OUT_DIR)%.o: %.c
+	@mkdir -p $(OUT_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-kernel.elf: start.o kernel.o $(SRC_DIR)kernel.ld
-	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OUT_DIR)kernel.o -o $(OUT_DIR)$@
+# Link everything
+$(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel/kernel.ld
+	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@
 
-kernel.bin: kernel.elf
-	$(OBJCOPY) -O binary $(OUT_DIR)$< $(OUT_DIR)$@
+# Binary and others unchanged
+kernel.bin: $(OUT_DIR)kernel.elf
+	$(OBJCOPY) -O binary $< $(OUT_DIR)$@
 
 clean:
 	rm -f $(OUT_DIR)*.o $(OUT_DIR)*.elf $(OUT_DIR)*.bin
 
 qemu:
-	@echo "Press Ctrl-A and then X to exit QEMU"
-	@echo
+	@echo "Press Ctrl-A then X to exit QEMU"
 	@qemu-system-arm -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
