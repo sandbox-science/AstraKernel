@@ -1,27 +1,5 @@
-#include <stdint.h>
-
-// Memory-mapped I/O registers for UART0 on QEMU versatilepb
-#define UART0_DR (*(volatile uint32_t *)0x101f1000) // Data Register
-#define UART0_FR (*(volatile uint32_t *)0x101f1018) // Flag Register
-#define UART_FR_TXFF (1U << 5)                      // Transmit FIFO Full
-
-// Send a single character over UART, waiting if the FIFO is full
-void putc(char c)
-{
-    // Wait until UART transmit FIFO is not full
-    while (UART0_FR & UART_FR_TXFF)
-        ;
-    UART0_DR = (uint32_t)c;
-}
-
-// Send a null-terminated string over UART
-void puts(const char *s)
-{
-    while (*s)
-    {
-        putc(*s++);
-    }
-}
+#include "../user/printf.h"
+#include "../user/clear.h"
 
 void init_message(void)
 {
@@ -41,16 +19,48 @@ void init_message(void)
 // Entry point for the kernel
 void kernel_main(void)
 {
-    puts("\x1B[2J"); // Clear the screen
-    puts("\x1B[H");  // Move cursor to home position
+    clear();
 
     init_message();
     puts("Kernel is running...\r\n");
     puts("Press Ctrl-A and then X to exit QEMU.\r\n");
     puts("\r\n");
 
+    char input_buffer[100];
+
     while (1)
     {
-        /* spin here */
+        input_buffer[0] = '\0'; // Clear the input buffer
+        puts("AstraKernel > ");
+        getlines(input_buffer, sizeof(input_buffer));
+        
+        puts("\r\n");
+
+        if (input_buffer[0] == 'q')         // Check for exit command
+        {
+            puts("Exiting...\r\n");
+            break;
+        }
+        else if (input_buffer[0] == 'h')    // Check for help command
+        {
+            puts("\nHelp: Press 'q' to exit, 'h' for help.\r\n");
+        }
+        else if (input_buffer[0] == 'c')    // Check for clear command
+        {
+            clear();
+        }
+        else if (input_buffer[0] == 't')    // Check for time command
+        {
+            puts("Current time: 12:00 PM\r\n"); // TO-DO: Implement real time check
+        }
+        else if (input_buffer[0] == 'd')    // Check for date command
+        {
+            puts("Current date: 2023-10-01\r\n"); // TO-DO: Implement real date check
+        }
+        else
+        {
+            puts("Unknown command. Type 'h' for help.\r\n");
+        }
+
     }
 }
