@@ -12,11 +12,19 @@ CC            := $(CROSS_COMPILE)gcc
 LD            := $(CROSS_COMPILE)ld
 OBJCOPY       := $(CROSS_COMPILE)objcopy
 
-CFLAGS      := -ffreestanding -nostdlib -nostartfiles -O2 -Wall -Wextra
-LDFLAGS     := -T kernel/kernel.ld
+# Compiler flags
+INC_DIRS   := -I./include
+ARCH_FLAGS := -march=armv5te -mcpu=arm926ej-s -marm
+
+CFLAGS := -ffreestanding -nostdlib -nostartfiles \
+          $(ARCH_FLAGS) -O2 -Wall -Wextra \
+          -fno-builtin \
+          $(INC_DIRS)
+
+LDFLAGS := -T kernel.ld -nostdlib --build-id=none
 
 # Tell make to look for .c in these dirs:
-VPATH       := $(SRC_DIRS)
+VPATH := $(SRC_DIRS)
 
 all: clean kernel.bin qemu
 
@@ -31,7 +39,7 @@ $(OUT_DIR)%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Link everything
-$(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel/kernel.ld
+$(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld
 	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@
 
 # Binary and others unchanged
@@ -44,3 +52,5 @@ clean:
 qemu:
 	@echo "Press Ctrl-A then X to exit QEMU"
 	@qemu-system-arm -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
+
+.PHONY: all clean qemu
