@@ -1,12 +1,17 @@
 #include <stdint.h>
+#include <stddef.h>
+
+_Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 // Memory-mapped I/O registers for UART0 on QEMU versatilepb
 #define UART0_DR (*(volatile uint32_t *)0x101f1000) // Data Register
 #define UART0_FR (*(volatile uint32_t *)0x101f1018) // Flag Register
-#define UART_FR_TXFF (1U << 5)                      // Transmit FIFO Full
+
+static const uint32_t UART_FR_TXFF = (1U << 5); // Transmit FIFO Full
+static const uint32_t UART_FR_RXFE = (1U << 4); // Receive FIFO Empty
 
 // Send a single character over UART, waiting if the FIFO is full
-void putc(char c)
+static inline void putc(char c)
 {
     // Wait until UART transmit FIFO is not full
     while (UART0_FR & UART_FR_TXFF)
@@ -24,18 +29,18 @@ void puts(const char *s)
 }
 
 // Function to get user input from UART
-char getc(void)
+static inline char getc(void)
 {
     // Wait until UART receive FIFO is not empty
-    while (UART0_FR & (1U << 4))
+    while (UART0_FR & UART_FR_RXFE)
         ;
     return (char)(UART0_DR & 0xFF);
 }
 
 // Function to getline from user input
-void getlines(char *buffer, int length)
+void getlines(char *restrict buffer, size_t length)
 {
-    int index = 0;
+    size_t index = 0;
     char character;
     while (index < length - 1)
     {
@@ -44,15 +49,12 @@ void getlines(char *buffer, int length)
         {
             break;
         }
-        if (character == '\b') // Check for backspace
+        if ((character == '\b' || character == 0x7F) && index > 0) // Check for backspace
         {
-            if (index > 0)
-            {
-                index--;
-                putc('\b'); // Move cursor back
-                putc(' ');  // Clear the character
-                putc('\b'); // Move cursor back again
-            }
+            index--;
+            putc('\b'); // Move cursor back
+            putc(' ');  // Clear the character
+            putc('\b'); // Move cursor back again
         }
         else
         {
