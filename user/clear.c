@@ -1,8 +1,8 @@
 #include "printf.h"
 
-// Clear the screen
-void clear()
+// Clears the terminal screen and moves the cursor to the home position.
+void clear(void)
 {
-  puts("\x1B[2J"); // Clear the screen
-  puts("\x1B[H");  // Move cursor to home position
+  puts("\x1B[2J");
+  puts("\x1B[H");
 }
