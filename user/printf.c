@@ -122,7 +122,6 @@ void puts(char *s, ...)
                 case 'u':
                 {
                     _putunsignedlong(unum, 10, false);
-                    s += 1;
                     break;
                 }
 
@@ -137,7 +136,6 @@ void puts(char *s, ...)
                         unum = ~unum + 1; // 2's complement
                     }
 
-                    s += 1;
                     _putunsignedlong(unum, 10, false);
                     break;
                 }
@@ -145,21 +143,20 @@ void puts(char *s, ...)
                 case 'x':
                 {
                     _puthexsmall(unum);
-                    s += 1;
                     break;
                 }
                 case 'X':
                 {
                     _puthexcapital(unum);
-                    s += 1;
                     break;
                 }
                 default:
                 {
-                    s += 1;
                     break;
                 }
                 }
+
+                s += 1;
 
                 break;
             }
