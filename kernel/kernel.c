@@ -49,7 +49,7 @@ void kernel_main(void)
         switch (input_buffer[0])
         {
         case 'h': // Check for help command
-            puts("\nHelp: Press 'q' to exit, 'h' for help.\r\n");
+            puts("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
             break;
         case 'e':
             puts("%lx %ld %ld\n", 18446744073709551615, -9223372036854775809, 9223372036854775809);
