@@ -21,6 +21,69 @@ static inline void putc(char c)
     UART0_DR = (uint32_t)c;
 }
 
+unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
+{
+    *remainder = 0;
+    unsigned long long quotient = 0;
+
+    for (int i = 63; i >= 0; i--)
+    {
+        quotient <<= 1;
+        *remainder <<= 1;
+        unsigned long long temp = (unsigned long long)1 << i; // Without this cast, the type is misinterpreted leading to UB
+        *remainder |= (dividend & temp) >> i;
+
+        if (*remainder >= divisor)
+        {
+            *remainder -= divisor;
+            quotient |= 1;
+        }
+    }
+
+    return quotient;
+}
+
+void _putunsignedlong(unsigned long long unum, unsigned long long base, bool hex_capital)
+{
+    char out_buf[32];
+    uint32_t len = 0;
+
+    char base16_factor = (7 * (hex_capital) + 39 * (!hex_capital)) * (base == 16); // If base 16, add 7 or 39 depending on
+                                                                                   // X or x respectively
+
+    unsigned long long mod;
+    unsigned long long res;
+
+    do
+    {
+        res = _bdiv(unum, base, &mod);
+        out_buf[len] = '0' + mod + base16_factor * (mod > 9);
+
+        len++;
+        unum = res;
+    } while (unum);
+
+    for (int i = len - 1; i > -1; i--)
+    {
+        putc(out_buf[i]);
+    }
+}
+
+void _putunsignedint(uint32_t unum)
+{
+    _putunsignedlong(unum, 10, false);
+}
+
+void _puthexsmall(unsigned long long unum)
+{
+    _putunsignedlong(unum, 16, false);
+}
+
+void _puthexcapital(unsigned long long unum)
+{
+    _putunsignedlong(unum, 16, true);
+}
+
 // Send a null-terminated string over UART
 void puts(char *s, ...)
 {
