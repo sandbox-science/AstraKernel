@@ -210,14 +210,6 @@ void puts(char *s, ...)
     va_end(elem_list);
 }
 
-// void puts(const char *s, ...)
-// {
-//     while (*s)
-//     {
-//         putc(*s++);
-//     }
-// }
-
 // Function to get user input from UART
 static inline char getc(void)
 {
