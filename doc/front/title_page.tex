@@ -1,6 +1,7 @@
 % ------------------------------------------------
 % *** Title Page ***
 % ------------------------------------------------
+\doublespacing
 \phantomsection
 \begin{titlepage}
     \begin{center}
@@ -8,11 +9,25 @@
         \makeatletter
             {\Huge\bfseries \@title \par}
             \vspace{1em}
-
-            {\large By \@author \par}
+            \textit{A Minimal Kernel QEMU's VersatilePB (ARM926EJ-S) Platform} \\
             \vspace{1em}
-
-            {\small SandboxScience @ \@date \par}
+            \textit{Written in Modern C and ARM Assembly} \\
+            \vspace{1em}
+            \textit{Version 0.1} \\
+            \vspace{1em}
+            {\large \textit{By \@author} \par}
+            \vspace{1em}
+            {\small \@date \text{ \textcopyright SandboxScience} \par}
+              \vspace{1em}
         \makeatother
     \end{center}
 \end{titlepage}
+
+\setcounter{page}{2}
+
+% have an empty page after the title page
+\newpage
+\thispagestyle{empty}
+\begin{center}
+    \mbox{\textit{This page is intentionally left blank.}}
+\end{center}

@@ -1,31 +1,33 @@
-\title{AstraKernel Documentation}
-\author{Chris Dedman}
-\date{May 2025}
+\newcommand{\DocTitle}{AstraKernel Documentation}
+\newcommand{\DocAuthor}{Chris Dedman}
+\title{\DocTitle}
+\author{\DocAuthor}
+\date{2025-05-19}
 % -----------------------------------------------------
 
 % Layout: 1-inch margins all around
 \geometry{letterpaper, margin=1in}
 
-% Remove conflicting layout settings
-\setlength{\parskip}{1em}
-\setlength{\parindent}{2em}
-
-% Define preliminary page style (center bottom)
-\fancypagestyle{prelim}{
+%— Base pagestyle: no headers, footer at center
+\fancypagestyle{base}{
   \fancyhf{}
   \cfoot{\thepage}
-  \renewcommand{\headrulewidth}{0.1pt}
-  \renewcommand{\footrulewidth}{0pt}
-  \setlength{\footskip}{0.5in} % page number 0.5" from bottom
+  \renewcommand{\headrulewidth}{0pt}
 }
 
-% Define main body page style (top right)
-\fancypagestyle{main}{
-  \fancyhf{}
-  \rhead{\thepage}
-  \renewcommand{\headrulewidth}{0pt}
-  \setlength{\headsep}{0.5in} % page number 0.5" from top
+%— Preliminary pages (uses 'base', but moves foot up)
+\fancypagestyle{prelim}{
+  \fancypagestyle{base}% inherit
+  \setlength{\footskip}{0.5in}
 }
+
+%— Main body pages (page number in header)
+\fancypagestyle{main}{
+  \fancypagestyle{base}% inherit
+  \fancyhead[R]{\thepage}
+  \setlength{\headsep}{0.5in}
+}
+
 
 % Code style
 \definecolor{codegray}{gray}{0.95}
@@ -57,29 +59,17 @@
 
 \renewcommand{\thesection}{\Roman{section}.}
 \renewcommand{\thesubsection}{\Alph{subsection}.}
-\renewcommand{\thesubsubsection}{\arabic{section}.\arabic{subsection}.\alph{subsubsection}}
 
 \newcommand{\code}[1]{\texttt{\textcolor{blue}{#1}}}
-
 \makeatletter
-\renewcommand{\section}{\@startsection{section}{1}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}{\centering\normalfont\large\bfseries}}
-\makeatother
-
-\makeatletter
-\renewcommand{\subsection}{\@startsection
-  {subsection}{2}{0pt}        % name, level, indent
-  {1.5ex plus .2ex}           % space *before* subsection
-  {1ex plus .2ex}             % space *after* subsection
-  {\normalfont\scshape}       % style
-}
-\makeatother
-
-\makeatletter
-\renewcommand{\subsubsection}{\@startsection
-  {subsubsection}{3}{1em}     % name, level, indent
-  {1ex plus .2ex}             % space *before* subsection
-  {0.5ex plus .2ex}           % space *after* subsection
-  {\normalfont\itshape}       % style
+% === redefine \section so it has less (even negative) vertical space before it
+\renewcommand\section{%
+  \@startsection{section}% <name>
+    {1}%               <level>
+    {\z@}%             <indent>
+    {-3ex \@plus -1ex \@minus -.2ex}%  <beforeskip>
+    {1ex \@plus .2ex}%                <afterskip>
+    {\normalfont\Large\bfseries}%     <style>
 }
 \makeatother
 
@@ -88,8 +78,8 @@
 
 % HYPERLINKS & METADATA
 \hypersetup{
-  pdftitle   = {\@AstraKernel},
-  pdfauthor  = {\@Chris Dedman},
+  pdftitle   = {\@DocTitle},
+  pdfauthor  = {\@DocAuthor},
   pdfkeywords = {AstraKernel, Documentation, LaTeX},
   pdfsubject = {AstraKernel Documentation},
   colorlinks=true,
@@ -98,3 +88,13 @@
   filecolor=green,      
   urlcolor=cyan,
 }
+
+\makeatletter
+\newenvironment{info}{%
+  \par\medskip
+  \noindent\textbf{INFO:}\quad%
+  \begin{quote}%
+}{%
+  \end{quote}\par\medskip
+}
+\makeatother
