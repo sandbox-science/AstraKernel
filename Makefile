@@ -29,7 +29,7 @@ VPATH := $(SRC_DIRS)
 all: clean kernel.bin qemu
 
 # Assembly start.o goes to build/
-$(OUT_DIR)start.o: kernel/start.S
+$(OUT_DIR)start.o: kernel/start.s
 	@mkdir -p $(OUT_DIR)
 	$(AS) -c $< -o $@
 
@@ -51,6 +51,6 @@ clean:
 
 qemu:
 	@echo "Press Ctrl-A then X to exit QEMU"
-	@qemu-system-arm -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
+	@qemu-system-arm -cpu arm926 -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
 
 .PHONY: all clean qemu
