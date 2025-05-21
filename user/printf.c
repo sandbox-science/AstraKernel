@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdbool.h>
+#include <stdarg.h>
 #include <stddef.h>
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
@@ -20,12 +22,129 @@ static inline void putc(char c)
 }
 
 // Send a null-terminated string over UART
-void puts(const char *s)
+void puts(char *s, ...)
 {
+    va_list elem_list;
+
+    va_start(elem_list, s);
+
     while (*s)
     {
-        putc(*s++);
+        if (*s == '%')
+        {
+            switch (*(s + 1))
+            {
+            case 'c':
+            {
+                uint32_t character = va_arg(elem_list, uint32_t); // Characters are converted into 'int' when passed as var-args
+                putc((char)character);
+                break;
+            }
+            case 's':
+            {
+                char *it = va_arg(elem_list, char *);
+
+                while (*it)
+                {
+                    putc(*it++);
+                }
+                break;
+            }
+            case 'l':
+            {
+                unsigned long long unum = va_arg(elem_list, unsigned long long);
+
+                switch (*(s + 2))
+                {
+                case 'u':
+                {
+                    _putunsignedlong(unum, 10, false);
+                    s += 1;
+                    break;
+                }
+
+                case 'd':
+                {
+
+                    uint32_t sign_bit = unum >> 63;
+
+                    if (sign_bit)
+                    {
+                        putc('-');
+                        unum = ~unum + 1; // 2's complement
+                    }
+
+                    s += 1;
+                    _putunsignedlong(unum, 10, false);
+                    break;
+                }
+
+                case 'x':
+                {
+                    _puthexsmall(unum);
+                    s += 1;
+                    break;
+                }
+                case 'X':
+                {
+                    _puthexcapital(unum);
+                    s += 1;
+                    break;
+                }
+                default:
+                {
+                    s += 1;
+                    break;
+                }
+                }
+
+                break;
+            }
+            case 'd':
+            {
+                uint32_t num = va_arg(elem_list, uint32_t);
+
+                uint32_t sign_bit = num >> 31;
+
+                if (sign_bit)
+                {
+                    putc('-');
+                    num = ~num + 1; // 2's complement
+                }
+
+                _putunsignedint(num);
+                break;
+            }
+            case 'x':
+            {
+                uint32_t num = va_arg(elem_list, uint32_t);
+                _puthexsmall(num);
+                break;
+            }
+            case 'X':
+            {
+                uint32_t num = va_arg(elem_list, uint32_t);
+                _puthexcapital(num);
+                break;
+            }
+            case '%':
+            {
+                putc('%');
+                break;
+            }
+            default:
+                break;
+            }
+
+            s += 2; // Skip format specifier
+        }
+        else
+        {
+            putc(*s++);
+        }
     }
+
+    va_end(elem_list);
 }
 
 // Function to get user input from UART
@@ -58,8 +177,8 @@ void getlines(char *restrict buffer, size_t length)
         }
         else
         {
-            buffer[index++] = character;    // Store the character in the buffer
-            putc(character);                // Echo the character back
+            buffer[index++] = character; // Store the character in the buffer
+            putc(character);             // Echo the character back
         }
     }
     buffer[index] = '\0'; // Null-terminate the string
