@@ -64,7 +64,7 @@ void kernel_main(void)
             puts("Exiting...\r\n");
             is_running = false;
             break;
-        case 'c': // Cjeck for clear screen command
+        case 'c': // Check for clear screen command
             clear();
             break;
         case 't':                               // Check for time command
