@@ -232,7 +232,6 @@ void getlines(char *restrict buffer, size_t length)
         }
         if (character == '\b' || character == 0x7F) // Check for backspace
         {
-            // puts("HERE %u\n", index);
             if (index > 0)
             {
                 index--;

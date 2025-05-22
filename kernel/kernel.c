@@ -61,6 +61,8 @@ void kernel_main(void)
             puts("%x %x %X %X\n", 2147483647, 1234, 2147483647, 1234);
             puts("%lX %x %lx\n", 0x123456789abcdef0, 1234, 9223372036854775809);
             puts("Name: %c\n", 'b');
+            puts("Hello %s\n", "World");
+            puts("100%%\n");
             break;
         case 'q': // Check for exit command
             puts("Exiting...\r\n");
@@ -71,7 +73,7 @@ void kernel_main(void)
             break;
         case 't': // Check for time command
             gettime(&time_struct);
-            puts("Current time(UTC): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+            puts("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
             break;
         case 'd': // Check for date command
             getdate(&date_struct);
