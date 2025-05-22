@@ -2,7 +2,6 @@
 
 #include "printf.h"
 #include "clear.h"
-#include "datetime.h"
 
 static const char *banner[] = {
     "========================================\r\n",
@@ -15,7 +14,8 @@ static const char *banner[] = {
     "\r\n",
     "Welcome to your own little Astra world!\r\n",
     "Type away, explore, have fun.\r\n",
-    "\r\n"};
+    "\r\n"
+};
 
 // Initializes and prints the welcome banner.
 static void init_message(void)
@@ -38,46 +38,32 @@ void kernel_main(void)
 
     char input_buffer[100];
 
-    timeval time_struct;
-    dateval date_struct;
-
     bool is_running = true;
     while (is_running)
     {
         input_buffer[0] = '\0'; // Clear the input buffer
         puts("AstraKernel > ");
         getlines(input_buffer, sizeof(input_buffer));
-
+        
         puts("\r\n");
 
         switch (input_buffer[0])
         {
         case 'h': // Check for help command
-            puts("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
-            break;
-        case 'e':
-            puts("%lx %ld %ld\n", 18446744073709551615, -9223372036854775809, 9223372036854775809);
-            puts("%d %d\n", 2147483647, -2147483647);
-            puts("%x %x %X %X\n", 2147483647, 1234, 2147483647, 1234);
-            puts("%lX %x %lx\n", 0x123456789abcdef0, 1234, 9223372036854775809);
-            puts("Name: %c\n", 'b');
-            puts("Hello %s\n", "World");
-            puts("100%%\n");
+            puts("\nHelp: Press 'q' to exit, 'h' for help.\r\n");
             break;
         case 'q': // Check for exit command
             puts("Exiting...\r\n");
             is_running = false;
             break;
-        case 'c': // Check for clear screen command
+        case 'c': // Cjeck for clear screen command
             clear();
             break;
-        case 't': // Check for time command
-            gettime(&time_struct);
-            puts("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+        case 't':                               // Check for time command
+            puts("Current time: 12:00 PM\r\n"); // TO-DO: Implement real time check
             break;
-        case 'd': // Check for date command
-            getdate(&date_struct);
-            puts("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
+        case 'd':                                 // Check for date command
+            puts("Current date: 2023-10-01\r\n"); // TO-DO: Implement real date check
             break;
         default:
             puts("Unknown command. Type 'h' for help.\r\n");

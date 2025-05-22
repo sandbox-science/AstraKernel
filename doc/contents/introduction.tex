@@ -1,19 +1,16 @@
 % ------------------------------------------------
 % *** Section 1: Introduction ***
 % ------------------------------------------------
-% This section can be used for introduction or background information
 \newpage
 \chapter{Introduction}
 \section{Getting Started}
-
-
+% Perhaps, move this block after building and running AstraKernel subsection
 AstraKernel begins its life in a small bootstrap routine, written in ARM assembly, 
 that prepares the processor’s state before passing control to the main C kernel. 
 This bootstrap code is responsible for setting up the stack pointer, clearing 
 the uninitialized data section (\texttt{.bss}), and ensuring a clean environment 
-for the kernel’s entry point.
-
-Below is the initial assembly code that executes at startup: \\
+for the kernel’s entry point. Below is the initial assembly code that executes 
+at startup: \\
 
 \begin{lstlisting}[language={C}, caption={Initial bootstrap code for AstraKernel.}, label={lst:bootstrap}]
     .section .text
@@ -23,6 +20,7 @@ _start:
     // Set up the stack pointer
     LDR sp, =_estack
     BIC sp, sp, #7
+
     // Zero the .bss section
     LDR R0, =__bss_start   // Start address (symbol from linker script)
     LDR R1, =__bss_end     // End address (symbol from linker script)
@@ -49,6 +47,9 @@ CPU is properly initialized and memory is in a known state before higher-level
 code takes over. Once these preparations are complete, the \texttt{kernel\_main} 
 function from \texttt{kernel/kernel.c} is called, marking the transition from 
 low-level assembly to the C code that forms the core of AstraKernel.
+
+% TODO: Explain the assembly code in more detail, specifically the
+% stack pointer setup and BSS clearing process.
 
 \subsection{Prerequisites}
 
@@ -85,9 +86,63 @@ tools installed on your system:
 For best results, ensure all tools are up-to-date. Consult the official documentation 
 of each tool for installation instructions on your operating system.
 
-\begin{figure}[!ht]
+\subsection{Building \& Running AstraKernel}
+
+\begin{note}
+  The following instructions assume you have the necessary tools installed on your 
+  system as mentioned in the prerequisites.
+\end{note}
+
+This project uses \texttt{Make} to automate the build process. The configuration
+is located in the \texttt{Makefile} in the root directory of the kernel source code.
+To build and run the kernel, navigate to the root directory of the AstraKernel source code
+and execute the following command in your terminal: \\
+
+\begin{lstlisting}[language={bash}, caption={Building AstraKernel.}, label={lst:build}]
+make
+\end{lstlisting}
+
+\noindent
+This command invokes the Makefile, which automatically compiles the kernel 
+source code, links the object files, and generates the final kernel binary. The 
+output files are placed in the \texttt{build/} directory, and any previously 
+compiled files there are removed to ensure a clean build environment. Finally, 
+the commands also run \texttt{make qemu}, which launches the QEMU emulator with the 
+built kernel image. \\
+
+\begin{lstlisting}[language={make}, caption={Makefile for AstraKernel.}, label={lst:makefile}]
+  # Assembly start.o goes to build/
+  $(OUT_DIR)start.o: kernel/start.S
+    @mkdir -p $(OUT_DIR)
+    $(AS) -c $< -o $@
+
+  # Pattern rule for any .c -> build/*.o
+  $(OUT_DIR)%.o: %.c
+    @mkdir -p $(OUT_DIR)
+    $(CC) $(CFLAGS) -c $< -o $@
+
+  # Link everything
+  $(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld
+    $(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@
+
+  # Generate the kernel binary from the ELF file
+  kernel.bin: $(OUT_DIR)kernel.elf
+    $(OBJCOPY) -O binary $< $(OUT_DIR)$@
+\end{lstlisting}
+
+\begin{info}
+  You can run each \texttt{make} target on its own. Run \texttt{make kernel.bin} 
+  to compile the kernel binary, \texttt{make qemu} to launch the built kernel in 
+  QEMU, and \texttt{make clean} to remove all object files and the \texttt{kernel.bin} 
+  from the \texttt{build/} directory.
+\end{info}
+
+\noindent
+If the build is successful, you will see the output similar to the following:
+
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.6\textwidth]{figures/bootedKernel.png}
+  \includegraphics[width=0.5\textwidth]{figures/bootedKernel.png}
   \caption{AstraKernel booted in QEMU.}
   \label{fig:bootedKernel}
 \end{figure}
