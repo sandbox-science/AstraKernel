@@ -52,11 +52,13 @@ void kernel_main(void)
             puts("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
             break;
         case 'e':
-            puts("%lx %ld %ld\n", 18446744073709551615, -9223372036854775809, 9223372036854775809);
-            puts("%d %d\n", 2147483647, -2147483647);
-            puts("%x %x %X %X\n", 2147483647, 1234, 2147483647, 1234);
+            puts("%ld %ld %ld\n", 0, -9223372036854775808, 9223372036854775807);
+            puts("%d %d\n", 2147483647, -2147483648);
+            puts("%x %lx %lX %X\n", 2147483647, 2147483649, 2147483648, 1234);
             puts("%lX %x %lx\n", 0x123456789abcdef0, 1234, 9223372036854775809);
             puts("Name: %c\n", 'b');
+            puts("Hello %s\n", "World");
+            puts("100%%\n");
             break;
         case 'q': // Check for exit command
             puts("Exiting...\r\n");

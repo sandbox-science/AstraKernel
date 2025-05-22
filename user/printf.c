@@ -3,6 +3,9 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+// TODO:
+//  Check the working of puts, all cases
+
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 // Memory-mapped I/O registers for UART0 on QEMU versatilepb

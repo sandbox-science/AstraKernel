@@ -1,0 +1,4 @@
+# exclude the /bin directory
+# This is the directory where the compiled files are stored
+# It is not necessary to include it in the repository
+/bin
