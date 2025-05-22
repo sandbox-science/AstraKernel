@@ -51,7 +51,7 @@ void kernel_main(void)
         case 'h': // Check for help command
             puts("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
             break;
-        case 'e':
+        case 'e': // TODO: This is for testing purposes. Remove once not needed
             puts("%ld %ld %ld\n", 0, -9223372036854775808, 9223372036854775807);
             puts("%d %d\n", 2147483647, -2147483648);
             puts("%x %lx %lX %X\n", 2147483647, 2147483649, 2147483648, 1234);
