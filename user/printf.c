@@ -221,8 +221,6 @@ void getlines(char *restrict buffer, size_t length)
 {
     size_t index = 0;
     char character;
-    char escape = 0;
-    char arrow_keys = 0;
 
     while (index < length - 1)
     {
