@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "clear.h": "c",
-        "stddef.h": "c",
-        "cstdint": "c",
-        "stdbool.h": "c"
-    }
-}
