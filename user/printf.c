@@ -26,6 +26,8 @@ static inline void putc(char c)
 
 unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
 {
+    // INFO: Currently, this algorithm involves dividing only by 10 and 16. So, division by zero should not be a problem, yet.
+    // TO-DO: Design a faster division algorithm and ensure that division by zero is not allowed.
     *remainder = 0;
     unsigned long long quotient = 0;
 
