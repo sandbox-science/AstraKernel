@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 // TODO:
-//  Check the working of puts, all cases
+//  Check the working of printf, all cases
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
@@ -90,7 +90,16 @@ void _puthexcapital(unsigned long long unum)
 }
 
 // Send a null-terminated string over UART
-void puts(char *s, ...)
+void puts(const char *s)
+{
+    while (*s)
+    {
+        putc(*s++);
+    }
+}
+
+// Send a formatted string over UART
+void printf(char *s, ...)
 {
     va_list elem_list;
 
