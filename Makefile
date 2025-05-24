@@ -29,7 +29,7 @@ VPATH := $(SRC_DIRS)
 all: clean kernel.bin qemu
 
 # Assembly start.o goes to build/
-$(OUT_DIR)start.o: kernel/start.S
+$(OUT_DIR)start.o: kernel/start.s
 	@mkdir -p $(OUT_DIR)
 	$(AS) -c $< -o $@
 
