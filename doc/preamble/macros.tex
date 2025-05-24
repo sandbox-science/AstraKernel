@@ -89,10 +89,22 @@
   urlcolor=cyan,
 }
 
+% Custom command for INFO boxes
 \makeatletter
 \newenvironment{info}{%
   \par\medskip
   \noindent\textbf{INFO:}\quad%
+  \begin{quote}%
+}{%
+  \end{quote}\par\medskip
+}
+\makeatother
+
+% Custom command for NOTE boxes
+\makeatletter
+\newenvironment{note}{%
+  \par\medskip
+  \noindent\textbf{NOTE:}\quad%
   \begin{quote}%
 }{%
   \end{quote}\par\medskip
