@@ -3,8 +3,13 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-// TODO:
-//  Check the working of puts, all cases
+typedef struct Format_State
+{
+    unsigned long long num;
+    bool valid_format;
+    bool in_format;   // Used to handle multi-character format specifiers
+    bool long_format; // %l. type specifier
+} Format_State;
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
@@ -66,9 +71,9 @@ void _putunsignedlong(unsigned long long unum, unsigned long long base, bool hex
         unum = res;
     } while (unum);
 
-    for (int i = len - 1; i > -1; i--)
+    for (uint32_t i = len; i > 0; i--)
     {
-        putc(out_buf[i]);
+        putc(out_buf[i - 1]);
     }
 }
 
@@ -87,16 +92,71 @@ void _puthexcapital(unsigned long long unum)
     _putunsignedlong(unum, 16, true);
 }
 
+void _putintegers(char control, Format_State *format_state)
+{
+    format_state->in_format = false; // Valid as only %l updates this
+
+    switch (control)
+    {
+    case 'u':
+    {
+        _putunsignedlong(format_state->num, 10, false);
+        break;
+    }
+
+    case 'd':
+    {
+        uint32_t shamt = format_state->long_format * 63 + !(format_state->long_format) * 31;
+
+        uint32_t sign_bit = (format_state->num) >> shamt;
+
+        if (sign_bit)
+        {
+            putc('-');
+
+            format_state->num = ((format_state->num ^ 0xffffffff) * !format_state->long_format +         // 2's complement for 32 bit
+                                 (format_state->num ^ 0xffffffffffffffff) * format_state->long_format) + // 2's complement for 64 bit
+                                1;
+        }
+
+        _putunsignedlong(format_state->num, 10, false);
+
+        break;
+    }
+    case 'x':
+    {
+        _puthexsmall(format_state->num);
+        break;
+    }
+    case 'X':
+    {
+        _puthexcapital(format_state->num);
+        break;
+    }
+    }
+}
+
+// Validation for integer formats
+bool _validate_format_specifier(char c)
+{
+    return (c == 'd') ||
+           (c == 'u') ||
+           (c == 'x') ||
+           (c == 'X');
+}
+
 // Send a null-terminated string over UART
-void puts(char *s, ...)
+void printf(const char *s, ...)
 {
     va_list elem_list;
 
     va_start(elem_list, s);
 
+    Format_State format_state = {.num = 0, .valid_format = false, .in_format = false, .long_format = false};
+
     while (*s)
     {
-        if (*s == '%')
+        if (*s == '%' || format_state.in_format)
         {
             switch (*(s + 1))
             {
@@ -110,6 +170,12 @@ void puts(char *s, ...)
             {
                 char *it = va_arg(elem_list, char *);
 
+                if (it == NULL)
+                {
+                    printf("(null)");
+                    break;
+                }
+
                 while (*it)
                 {
                     putc(*it++);
@@ -118,77 +184,10 @@ void puts(char *s, ...)
             }
             case 'l':
             {
-                unsigned long long unum = va_arg(elem_list, unsigned long long);
-
-                switch (*(s + 2))
-                {
-                case 'u':
-                {
-                    _putunsignedlong(unum, 10, false);
-                    break;
-                }
-
-                case 'd':
-                {
-
-                    uint32_t sign_bit = unum >> 63;
-
-                    if (sign_bit)
-                    {
-                        putc('-');
-                        unum = ~unum + 1; // 2's complement
-                    }
-
-                    _putunsignedlong(unum, 10, false);
-                    break;
-                }
-
-                case 'x':
-                {
-                    _puthexsmall(unum);
-                    break;
-                }
-                case 'X':
-                {
-                    _puthexcapital(unum);
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-                }
-
-                s += 1;
-
-                break;
-            }
-            case 'd':
-            {
-                uint32_t num = va_arg(elem_list, uint32_t);
-
-                uint32_t sign_bit = num >> 31;
-
-                if (sign_bit)
-                {
-                    putc('-');
-                    num = ~num + 1; // 2's complement
-                }
-
-                _putunsignedint(num);
-                break;
-            }
-            case 'x':
-            {
-                uint32_t num = va_arg(elem_list, uint32_t);
-                _puthexsmall(num);
-                break;
-            }
-            case 'X':
-            {
-                uint32_t num = va_arg(elem_list, uint32_t);
-                _puthexcapital(num);
-                break;
+                format_state.in_format = true;
+                format_state.long_format = true;
+                s += 1; // Evaluate the immediate next char
+                continue;
             }
             case '%':
             {
@@ -196,7 +195,31 @@ void puts(char *s, ...)
                 break;
             }
             default:
+            {
+                format_state.valid_format = _validate_format_specifier(*(s + 1));
+
+                if (format_state.valid_format)
+                {
+                    if (format_state.long_format)
+                    {
+                        format_state.num = (unsigned long long)va_arg(elem_list, unsigned long long);
+                    }
+                    else
+                    {
+                        format_state.num = (uint32_t)va_arg(elem_list, uint32_t);
+                    }
+
+                    _putintegers(*(s + 1), &format_state);
+
+                    format_state.long_format = false;
+                }
+                else
+                {
+                    // Invalid format error handling goes here
+                }
+
                 break;
+            }
             }
 
             s += 2; // Skip format specifier
