@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "datetime.h"
 #include "printf.h"
 #include "clear.h"
 
@@ -38,6 +39,9 @@ void kernel_main(void)
 
     char input_buffer[100];
 
+    dateval date_struct;
+    timeval time_struct;
+
     bool is_running = true;
     while (is_running)
     {
@@ -68,11 +72,14 @@ void kernel_main(void)
         case 'c': // Check for clear screen command
             clear();
             break;
-        case 't':                                 // Check for time command
-            printf("Current time: 12:00 PM\r\n"); // TO-DO: Implement real time check
+
+        case 't': // Check for time command
+            gettime(&time_struct);
+            printf("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
             break;
-        case 'd':                                   // Check for date command
-            printf("Current date: 2023-10-01\r\n"); // TO-DO: Implement real date check
+        case 'd': // Check for date command
+            getdate(&date_struct);
+            printf("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
             break;
         default:
             printf("Unknown command. Type 'h' for help.\r\n");
