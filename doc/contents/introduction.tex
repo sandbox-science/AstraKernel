@@ -20,6 +20,7 @@ _start:
     // Set up the stack pointer
     LDR sp, =_estack
     BIC sp, sp, #7
+
     // Zero the .bss section
     LDR R0, =__bss_start   // Start address (symbol from linker script)
     LDR R1, =__bss_end     // End address (symbol from linker script)
