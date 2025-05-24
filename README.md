@@ -39,7 +39,7 @@ make
 
 ## Documentation
 
-For more details about this kernel, refer to the [AstraKernel Documentation](https://github.com/sandbox-science/AstraKernel/blob/Develop/doc/AstraKernelManual.pdf).
+For more details about this kernel, refer to the [AstraKernel Documentation](https://github.com/sandbox-science/AstraKernel/blob/main/doc/AstraKernelManual.pdf).
 
 > [!NOTE]
 > 
