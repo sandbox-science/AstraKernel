@@ -11,7 +11,8 @@ extern "C"
 #endif
 
     void putc(char c);
-    void printf(const char *s, ...);
+    void puts(const char *s);
+    void printf(char *s, ...);
     char getc(void);
     void getlines(char *restrict buffer, size_t length);
 

@@ -52,19 +52,14 @@ void kernel_main(void)
         case 'h': // Check for help command
             printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
             break;
-        case 'e':
-            printf("Char and String: %c %s\n", 'b', "HELLO WORLD");
-            printf("Longs: %d %ld %ld\n", 0, -9223372036854775808, 9223372036854775807);
-            printf("%lu %lu\n", 9223372036854775807, 18446744073709551615);
+        case 'e': // TODO: This is for testing purposes. Remove once not needed
+            printf("%ld %ld %ld\n", 0, -9223372036854775808, 9223372036854775807);
             printf("%d %d\n", 2147483647, -2147483648);
-            printf("%x %x %X %X\n", 2147483647, 1234, 2147483647, 1234);
+            printf("%x %lx %lX %X\n", 2147483647, 2147483649, 2147483648, 1234);
             printf("%lX %x %lx\n", 0x123456789abcdef0, 1234, 9223372036854775809);
             printf("Name: %c\n", 'b');
-            printf("Hello %s\n", NULL);
-            printf("100%%s\n");
-            printf("Percent: %");
-            printf("\n");
-            printf("%d\n", 10, 10, 1, 11);
+            printf("Hello %s\n", "World");
+            printf("100%%\n");
             break;
         case 'q': // Check for exit command
             printf("Exiting...\r\n");

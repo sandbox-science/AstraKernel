@@ -3,6 +3,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+// TODO: Check working of printf, all cases
+
 typedef struct Format_State
 {
     unsigned long long num;
@@ -31,6 +33,8 @@ static inline void putc(char c)
 
 unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
 {
+    // INFO: Currently, this algorithm involves dividing only by 10 and 16. So, division by zero should not be a problem, yet.
+    // TO-DO: Design a faster division algorithm and ensure that division by zero is not allowed.
     *remainder = 0;
     unsigned long long quotient = 0;
 
@@ -146,7 +150,16 @@ bool _validate_format_specifier(char c)
 }
 
 // Send a null-terminated string over UART
-void printf(const char *s, ...)
+void puts(const char *s)
+{
+    while (*s)
+    {
+        putc(*s++);
+    }
+}
+
+// Send a formatted string over UART
+void printf(char *s, ...)
 {
     va_list elem_list;
 
