@@ -6,14 +6,6 @@
 
 // TODO: Check working of printf, all cases
 
-typedef struct Format_State
-{
-    unsigned long long num;
-    bool valid_format;
-    bool in_format;   // Used to handle multi-character format specifiers
-    bool long_format; // %l. type specifier
-} Format_State;
-
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 // Memory-mapped I/O registers for UART0 on QEMU versatilepb
@@ -229,7 +221,7 @@ void printf(char *s, ...)
                 }
                 else
                 {
-                    // TODO: Implement invalid format error handling here
+                    // Invalid format error handling goes here
                 }
 
                 break;
@@ -259,26 +251,139 @@ static inline char getc(void)
 // Function to getline from user input
 void getlines(char *restrict buffer, size_t length)
 {
-    size_t index = 0;
+    long long index = 0;
+    long long cursor_position = 0;
+
     char character;
+
+    uint8_t escape = 0;
+    uint8_t arrow_keys = 0;
+
     while (index < length - 1)
     {
         character = getc();
+
+        if (character == '\033') // Handle Escape sequences
+        {
+            escape = 1;
+            continue;
+        }
+
+        if (escape)
+        {
+            if (escape == 1)
+            {
+                arrow_keys = (character == 91);
+            }
+            else
+            {
+                if (arrow_keys)
+                {
+                    switch (character)
+                    {
+                    case 'A': // Up
+                    {
+                        break;
+                    }
+                    case 'B': // Down
+                    {
+                        break;
+                    }
+                    case 'C': // Right
+                    {
+                        if (cursor_position < index)
+                        {
+                            puts("\033[C");
+                            cursor_position++;
+                        }
+                        break;
+                    }
+                    case 'D': // Left
+                    {
+                        if (cursor_position - 1 >= 0)
+                        {
+                            puts("\033[D");
+                            cursor_position--;
+                        }
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                    }
+
+                    arrow_keys = 0;
+                }
+            }
+
+            escape++;
+
+            if (escape == 3) // Escape sequence is 3 characters long
+            {
+                escape = 0;
+            }
+
+            continue;
+        }
+
         if (character == '\r') // Check for carriage return
         {
             break;
         }
         if ((character == '\b' || character == 0x7F) && index > 0) // Check for backspace
         {
-            index--;
-            putc('\b'); // Move cursor back
-            putc(' ');  // Clear the character
-            putc('\b'); // Move cursor back again
+            if (cursor_position > 0)
+            {
+                long long initial_pos = cursor_position;
+
+                for (long long cur = cursor_position - 1; cur < index; cur++) // Shift characters to the left
+                {
+                    buffer[cur] = buffer[cur + 1];
+                }
+
+                bool cond = (index != initial_pos);
+
+                index--;
+                buffer[index] = '\0';
+
+                cursor_position--;
+
+                if (cond)
+                    printf("\033[%ldC", (index - cursor_position));
+
+                putc('\b'); // Move cursor back
+                putc(' ');  // Clear the character
+                putc('\b'); // Move cursor back again
+
+                if (cond)
+                {
+                    printf("\033[%ldD", index - cursor_position); // Analogous to the above putc sequence, but for multiple characters
+                    printf("%s", buffer + cursor_position);
+                    printf("\033[%ldD", index - cursor_position);
+                }
+            }
         }
         else
         {
-            buffer[index++] = character; // Store the character in the buffer
-            putc(character);             // Echo the character back
+            putc(character); // Echo the character back
+
+            long long initial_pos = cursor_position;
+
+            for (long long cur = index; cur >= cursor_position; cur--) // Shift characters to the right
+            {
+                buffer[cur + 1] = buffer[cur];
+            }
+
+            buffer[cursor_position] = character; // Store the character in the buffer
+
+            if (index != initial_pos)
+            {
+                puts(buffer + cursor_position + 1);
+                printf("\033[%ldD", index - initial_pos);
+            }
+
+            cursor_position++;
+            index++;
         }
     }
     buffer[index] = '\0'; // Null-terminate the string

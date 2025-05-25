@@ -3,22 +3,31 @@
 
 #include <stdint.h>
 
-typedef struct
+#ifdef __cplusplus
+extern "C"
 {
-    uint32_t hrs;
-    uint32_t mins;
-    uint32_t secs;
-} timeval;
+#endif
 
-typedef struct
-{
-    uint32_t day;
-    uint32_t month;
-    uint32_t year;
+    typedef struct
+    {
+        uint32_t hrs;
+        uint32_t mins;
+        uint32_t secs;
+    } timeval;
 
-} dateval;
+    typedef struct
+    {
+        uint32_t day;
+        uint32_t month;
+        uint32_t year;
 
-uint32_t getdate(dateval *date);
-uint32_t gettime(timeval *time);
+    } dateval;
+
+    uint32_t getdate(dateval *date);
+    uint32_t gettime(timeval *time);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // DATETIME_H
