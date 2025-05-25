@@ -6,29 +6,26 @@ _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 #define RTCDR (*(volatile uint32_t *)0x101e8000) // RTC Register
 
+#define SECONDS_IN_YEAR 31556926
+#define SECONDS_IN_MONTH 2629743
+#define SECONDS_IN_DAY 86400
+#define LEAP_YEARS_BEFORE_1970 477
+
 uint32_t getdate(dateval *date_struct)
 {
-    // Initialize only once
-    static uint32_t day_arr[12] = {31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    static uint32_t day_arr[12] = {31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // Initialize only once
 
     if (date_struct != NULL)
     {
-        // Number of seconds in a year: 31556926
-        // Number of seconds in a month: 2629743
-        // Number of seconds in a day: 86400
-
         uint32_t since_epoch = RTCDR;
 
-        date_struct->year = 1970 + since_epoch / 31556926;
+        date_struct->year  = 1970 + since_epoch / SECONDS_IN_YEAR;
+        date_struct->month = 1 + (since_epoch / SECONDS_IN_MONTH) % 12;
 
-        date_struct->month = 1 + (since_epoch / 2629743) % 12;
-
-        uint32_t days_since_epoch = since_epoch / 86400;
-        // 477 is number of leap years before 1970
-        uint32_t leap_years_since_epoch = (date_struct->year / 4) - (date_struct->year / 100) + (date_struct->year / 400) - 477;
-
-        uint32_t not_leap_years = date_struct->year - 1970 - leap_years_since_epoch;
-
+        uint32_t days_since_epoch       = since_epoch / SECONDS_IN_DAY;
+        uint32_t leap_years_since_epoch = (date_struct->year / 4) - (date_struct->year / 100) + (date_struct->year / 400) - LEAP_YEARS_BEFORE_1970;
+        uint32_t not_leap_years         = date_struct->year - 1970 - leap_years_since_epoch;
+        
         date_struct->day = days_since_epoch - (leap_years_since_epoch * 366) - (not_leap_years * 365);
 
         uint32_t is_leap_year = ((date_struct->year % 4 == 0) && (date_struct->year % 100 != 0)) || (date_struct->year % 400 == 0);
