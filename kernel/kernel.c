@@ -23,7 +23,7 @@ static void init_message(void)
 {
     for (size_t i = 0; i < sizeof(banner) / sizeof(banner[0]); ++i)
     {
-        printf(banner[i]);
+        puts(banner[i]);
     }
 }
 
