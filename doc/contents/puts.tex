@@ -2,8 +2,17 @@
 % *** Section 2: I/O API ***
 % ------------------------------------------------
 \newpage
-\chapter{I/O API}
-\section{printf(char *s, ...)}
+\chapter{I/O \& Time Services}
+
+\section{UART Device Driver}
+\subsubsection{Registers \& Constants}
+\begin{itemize}
+  \item \textbf{UART0\_DR} (Data Register), \texttt{0x101f1000}
+  \item \textbf{UART0\_FR} (Flag Register), \texttt{0x101f1018}
+  \item \textbf{UART\_FR\_TXFF}, \textbf{UART\_FR\_RXFE}
+\end{itemize}
+
+\subsection{API: \texttt{printf(char *s, ...)}}
 Sends a null-terminated format string over UART. If an incorrect datatype is given 
 for a format specifier, \underline{the behavior is undefined}. If a format specifier 
 is given without a matching argument, it is simply skipped when the string is outputted. 
@@ -59,5 +68,3 @@ for use with the format specifiers prefixed by \textbf{l}(ell).
   printf("%\n");
   // Output: (null)
 \end{lstlisting}
-
-\end{document}
