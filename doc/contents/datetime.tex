@@ -1,54 +1,83 @@
-\documentclass{article}
-\usepackage{listings}
-\usepackage{geometry}
-\geometry{margin=1in}
-\title{Timekeeping API}
-\date{}
-\begin{document}
+\newpage
+\section{Timekeeping API}
+Provide calendar dates and clock time based on the on-chip RTC.
 
-\maketitle
+\subsection*{Overview}
+\begin{itemize}
+    \item Reads a 32-bit seconds-since-1970 counter (RTC register at `0x101e8000`).
+    \item Exposes two APIs:
+    \begin{itemize}
+        \item \texttt{getdate(dateval *date)}: Fetches current date in days, months, and years.
+        \item \texttt{gettime(timeval *time)}: Fetches current time in hours, minutes, and seconds.
+    \end{itemize}
+\end{itemize}
 
-\section*{Structure Descriptions}
+\subsection*{Data Structure}
 
-\begin{lstlisting}[language=C]
+\begin{lstlisting}[language=C, caption={Structure definitions for time and date values.}, label={lst:datetime_structs}]
+    typedef struct
+    {
+        uint32_t hrs;
+        uint32_t mins;
+        uint32_t secs;
+    } timeval;
 
-typedef struct
-{
-    uint32_t hrs;
-    uint32_t mins;
-    uint32_t secs;
-} timeval;
-
-typedef struct
-{
-    uint32_t day;
-    uint32_t month;
-    uint32_t year;
-
-} dateval;
-
+    typedef struct
+    {
+        uint32_t day;
+        uint32_t month;
+        uint32_t year;
+    } dateval;
 \end{lstlisting}
 
-\section*{Implementation Note}
+\noindent
+The number of seconds since epoch is retrieved from 926EJ-S's Real Time Clock 
+Data Register(\textbf{RTCDR}). This is a 32 bit register, and therefore 
+\underline{subject to the Year 2038 Problem}.
 
-The number of seconds since epoch is retrieved from 926EJ-S's Real Time Clock Data Register(\textbf{RTCDR}). This is a 32 bit register, and therefore \underline{subject to the Year 2038 Problem}
+\subsection{API: \texttt{uint32\_t getdate(dateval *date\_struct)}}
+Populate the provided \texttt{*date\_struct} with the current date in days, months, and years.
 
-\section*{uint32_t getdate(dateval *date)}
+\subsubsection*{Parameters}
+\begin{itemize}
+    \item \texttt{date\_struct} pointer to a \texttt{dateval} structure; if \texttt{NULL}, 
+    only the raw \textbf{RTC} counter is returned.
+\end{itemize}
 
-Fetch current date in days, months and years into \texttt{date}. Returns number of seconds since epoch.
+\subsubsection*{Return Value}
+\begin{itemize}
+    \item Returns number of seconds since epoch (\texttt{RTCDR}) as read from the hardware register.
+\end{itemize}
 
-\section*{uint32_t gettime(timeval *time)}
+\subsection{API: \texttt{uint32\_t gettime(timeval *time\_struct)}}
+Populate \texttt{*time\_struct} with the current click time in hours, minutes, and seconds.
 
-Fetch current time in hours, minutes and seconds into \texttt{time}. Returns number of seconds since epoch.
+\subsubsection*{Parameters}
+\begin{itemize}
+    \item \texttt{time\_struct} pointer to a \texttt{timeval} structure; if \texttt{NULL}, 
+    only the raw \textbf{RTC} counter is returned.
+\end{itemize}
 
-\section*{Examples}
+\subsubsection*{Return Value}
+\begin{itemize}
+    \item Returns number of seconds since epoch (\texttt{RTCDR}) as read from the hardware register.
+\end{itemize}
 
-\begin{lstlisting}[language=C,showstringspaces=false]
-gettime(&time_struct);
-puts("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+\subsection*{Examples}
 
-getdate(&date_struct);
-puts("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
+\begin{lstlisting}[language=C, caption={Examples of getdate and gettime usage in AstraKernel.}, label={lst:datetime_examples}]
+    gettime(&time_struct);
+    printf("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+
+    getdate(&date_struct);
+    printf("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
 \end{lstlisting}
 
-\end{document}
+\subsection*{Notes}
+\begin{itemize}
+    \item Assumes \texttt{uint32\_t} is 4-bytes (compile-time check via \texttt{\_Static\_assert}).
+    \item The time and date values are based on the system's RTC, which should be set 
+    correctly at boot time.
+    \item The API does not handle time zones or daylight saving time adjustments; it 
+    provides GMT time only.
+\end{itemize}
