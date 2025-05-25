@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{geometry}
+\geometry{margin=1in}
+\title{Timekeeping API}
+\date{}
+\begin{document}
+
+\maketitle
+
+\section*{Structure Descriptions}
+
+\begin{lstlisting}[language=C]
+
+typedef struct
+{
+    uint32_t hrs;
+    uint32_t mins;
+    uint32_t secs;
+} timeval;
+
+typedef struct
+{
+    uint32_t day;
+    uint32_t month;
+    uint32_t year;
+
+} dateval;
+
+\end{lstlisting}
+
+\section*{Implementation Note}
+
+The number of seconds since epoch is retrieved from 926EJ-S's Real Time Clock Data Register(\textbf{RTCDR}). This is a 32 bit register, and therefore \underline{subject to the Year 2038 Problem}
+
+\section*{uint32_t getdate(dateval *date)}
+
+Fetch current date in days, months and years into \texttt{date}. Returns number of seconds since epoch.
+
+\section*{uint32_t gettime(timeval *time)}
+
+Fetch current time in hours, minutes and seconds into \texttt{time}. Returns number of seconds since epoch.
+
+\section*{Examples}
+
+\begin{lstlisting}[language=C,showstringspaces=false]
+gettime(&time_struct);
+puts("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+
+getdate(&date_struct);
+puts("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
+\end{lstlisting}
+
+\end{document}
