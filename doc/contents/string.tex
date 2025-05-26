@@ -1,0 +1,40 @@
+\newpage
+\section{String Manipulation API}
+\subsection{\texttt{strcmp(const char *str\_1, const char *str\_2)}}
+
+\paragraph{Purpose}
+Compares two null-terminated strings, character by character.
+
+\paragraph{Overview}
+This function compares the characters of two strings (\texttt{ASCII values}), 
+\texttt{str\_1} and \texttt{str\_2}, one by one. It returns:
+
+\paragraph{Return Values}
+\begin{itemize}
+    \item 0 if both strings are equal,
+    \item -1 if the first differing character in \texttt{str\_1} is less than that in \texttt{str\_2},
+    \item 1 if the first differing character in \texttt{str\_1} is greater than that in \texttt{str\_2}.
+\end{itemize}
+
+\paragraph{Behavior}
+The comparison stops at the first difference or the null terminator. 
+Case sensitivity is observed. Behavior is undefined if either pointer is not a 
+valid null-terminated string.
+
+\subsection*{Examples}
+\begin{lstlisting}[language=C, caption=String Comparison Example]
+  int result = strcmp("abc", "abc"); // Expect 0
+  printf("Expect 0 -> %d\n", result);
+
+  result = strcmp("abc", "abd"); // Expect -1
+  printf("Expect -1 -> %d\n", result);
+
+  result = strcmp("abc", "ABC"); // Expect 1
+  printf("Expect 1 -> %d\n", result);
+\end{lstlisting}
+
+\begin{note}
+In the future, we could returning the difference between the first differing 
+characters, which would allow for more detailed comparisons. This would enable 
+users to understand how far apart the strings are in terms of character values.
+\end{note}
