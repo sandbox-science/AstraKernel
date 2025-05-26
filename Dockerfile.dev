@@ -1,0 +1,27 @@
+FROM ubuntu:24.04
+
+# AstraKernel Dockerfile
+# ======================
+# Run the following to start:
+# $ make docker-dev
+
+# 1. Install dependencies
+RUN apt-get update && apt-get install -y \
+    # Install bare-metal ARM essentials
+    build-essential gcc-arm-none-eabi binutils-arm-none-eabi \
+    qemu-system-arm \
+    # Clear apt cache
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Copy from local FS
+COPY include/ /AstraKernel/include
+COPY kernel/ /AstraKernel/kernel
+COPY user/ /AstraKernel/user
+COPY kernel.ld /AstraKernel
+COPY Makefile /AstraKernel
+WORKDIR /AstraKernel
+
+# 3. Build/Run via QEMU
+RUN make kernel.bin
+
+CMD ["make", "qemu"]
