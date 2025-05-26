@@ -38,3 +38,33 @@ In the future, we could returning the difference between the first differing
 characters, which would allow for more detailed comparisons. This would enable 
 users to understand how far apart the strings are in terms of character values.
 \end{note}
+
+\subsection{\texttt{strlen(const char *str)}}
+
+\paragraph{Purpose}
+Calculates the length of a null-terminated string.
+
+\paragraph{Overview}
+This function counts the number of characters in a null-terminated string,
+excluding the null terminator itself. It returns the length of the string as an
+unsigned integer.
+
+\paragraph{Return Values}
+\begin{itemize}
+    \item The number of characters in the string, not including the null terminator.
+    \item 0 if the string is empty (i.e., the first character is the null terminator).
+\end{itemize}
+
+\paragraph{Behavior}
+The function iterates through the input string until the null terminator is found, returning 
+the number of characters preceding it. If the input pointer is not a valid 
+null-terminated string, the behavior is undefined.
+
+\subsection*{Examples}
+\begin{lstlisting}[language=C, caption=String Length Example]
+  size_t result = strlen("abc"); // Expect 3
+  printf("Expect len 3 -> %d\n", result);
+
+  result = strlen(""); // Expect 0
+  printf("Expect len 0 -> %d\n", result);
+\end{lstlisting}
