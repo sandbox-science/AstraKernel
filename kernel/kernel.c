@@ -4,6 +4,7 @@
 #include "datetime.h"
 #include "printf.h"
 #include "clear.h"
+#include "string.h"
 
 static const char *banner[] = {
     "========================================\r\n",
@@ -56,14 +57,27 @@ void kernel_main(void)
         case 'h': // Check for help command
             printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
             break;
-        case 'e': // TODO: This is for testing purposes. Remove once not needed
-            printf("%ld %ld %ld\n", 0, -9223372036854775808, 9223372036854775807);
-            printf("%d %d\n", 2147483647, -2147483648);
-            printf("%x %lx %lX %X\n", 2147483647, 2147483649, 2147483648, 1234);
-            printf("%lX %x %lx\n", 0x123456789abcdef0, 1234, 9223372036854775809);
-            printf("Name: %c\n", 'b');
-            printf("Hello %s\n", "World");
-            printf("100%%\n");
+        case 'e':
+            int result = strcmp("abc", "abc"); // Expect 0
+            printf("Expect 0 -> %d\n", result);
+
+            result = strcmp("abc", "abd"); // Expect -1
+            printf("Expect -1 -> %d\n", result);
+
+            result = strcmp("abc", "ABC"); // Expect 1
+            printf("Expect 1 -> %d\n", result);
+
+            result = strcmp("ABC", "abc"); // Expect -1
+            printf("Expect -1 -> %d\n", result);
+
+            result = strcmp("\x01\x02\x03", "\x01\x02\x03"); // Expect 0
+            printf("Expect 0 -> %d\n", result);
+
+            result = strcmp("\x01\x02\x03", "\x01\x02\x04"); // Expect -1
+            printf("Expect -1 -> %d\n", result);
+
+            result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
+            printf("Expect 1 -> %d\n", result);
             break;
         case 'q': // Check for exit command
             printf("Exiting...\r\n");
