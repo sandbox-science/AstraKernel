@@ -26,6 +26,8 @@ Type away, explore, have fun.
 
 ## Building
 
+### Native Build
+
 Make sure you have an ARM cross-compiler installed (e.g., `arm-none-eabi-gcc`) and `qemu-system-arm`.
 
 ```sh
@@ -36,6 +38,21 @@ make
 > 
 > `make` will clean, build, and run the kernel in QEMU. You can also run 
 `make qemu` to run the kernel without cleaning or building it again.
+
+### Docker Build
+
+If you have docker installed, you can also run AstraKernel through a docker container:
+
+```sh
+make docker
+```
+
+> [!IMPORTANT]
+> 
+> `make docker` will pull from the most recent `main` commit from the upstream repository
+> `https://github.com/sanbox-science/AstraKernel.git`.
+> If you wish to use a local copy, you can run `make docker-dev`, which will copy all
+> local build files into the repository.
 
 ## Documentation
 

@@ -53,4 +53,12 @@ qemu:
 	@echo "Press Ctrl-A then X to exit QEMU"
 	@qemu-system-arm -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
 
-.PHONY: all clean qemu
+docker:
+	docker build -t "astra-kernel" .
+	docker run -it --rm "astra-kernel"
+
+docker-dev:
+	docker build -f Dockerfile.dev -t "astra-kernel-dev" .
+	docker run -it --rm "astra-kernel-dev"
+
+.PHONY: all clean qemu docker
