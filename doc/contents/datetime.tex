@@ -2,7 +2,7 @@
 \section{Timekeeping API}
 Provide calendar dates and clock time based on the on-chip RTC.
 
-\subsection*{Overview}
+\paragraph{Overview}
 \begin{itemize}
     \item Reads a 32-bit seconds-since-1970 counter (RTC register at `0x101e8000`).
     \item Exposes two APIs:
@@ -35,30 +35,30 @@ The number of seconds since epoch is retrieved from 926EJ-S's Real Time Clock
 Data Register(\textbf{RTCDR}). This is a 32 bit register, and therefore 
 \underline{subject to the Year 2038 Problem}.
 
-\subsection{API: \texttt{uint32\_t getdate(dateval *date\_struct)}}
+\subsection{\texttt{uint32\_t getdate(dateval *date\_struct)}}
 Populate the provided \texttt{*date\_struct} with the current date in days, months, and years.
 
-\subsubsection*{Parameters}
+\paragraph{Parameters}
 \begin{itemize}
     \item \texttt{date\_struct} pointer to a \texttt{dateval} structure; if \texttt{NULL}, 
     only the raw \textbf{RTC} counter is returned.
 \end{itemize}
 
-\subsubsection*{Return Value}
+\paragraph{Return Value}
 \begin{itemize}
     \item Returns number of seconds since epoch (\texttt{RTCDR}) as read from the hardware register.
 \end{itemize}
 
-\subsection{API: \texttt{uint32\_t gettime(timeval *time\_struct)}}
+\subsection{\texttt{uint32\_t gettime(timeval *time\_struct)}}
 Populate \texttt{*time\_struct} with the current click time in hours, minutes, and seconds.
 
-\subsubsection*{Parameters}
+\paragraph{Parameters}
 \begin{itemize}
     \item \texttt{time\_struct} pointer to a \texttt{timeval} structure; if \texttt{NULL}, 
     only the raw \textbf{RTC} counter is returned.
 \end{itemize}
 
-\subsubsection*{Return Value}
+\paragraph{Return Value}
 \begin{itemize}
     \item Returns number of seconds since epoch (\texttt{RTCDR}) as read from the hardware register.
 \end{itemize}
