@@ -31,3 +31,19 @@ int strcmp(const char *str_1, const char *str_2)
 
     return 0;
 }
+
+/**
+ * @brief Calculates the length of a null-terminated string.
+ *
+ * @param str Pointer to the null-terminated string to be measured.
+ * @return The number of characters in the string, excluding the null terminator.
+ */
+size_t strlen(const char *str)
+{
+  const char *s = str;
+  while (*s)
+  {
+    ++s;
+  }
+  return s - str;
+}
