@@ -54,50 +54,50 @@ void kernel_main(void)
 
         switch (input_buffer[0])
         {
-        case 'h': // Check for help command
-            printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
-            break;
-        case 'e':
-            int result = strcmp("abc", "abc"); // Expect 0
-            printf("Expect 0 -> %d\n", result);
+            case 'h': // Check for help command
+                printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
+                break;
+            case 'e':
+                int result = strcmp("abc", "abc"); // Expect 0
+                printf("Expect 0 -> %d\n", result);
 
-            result = strcmp("abc", "abd"); // Expect -1
-            printf("Expect -1 -> %d\n", result);
+                result = strcmp("abc", "abd"); // Expect -1
+                printf("Expect -1 -> %d\n", result);
 
-            result = strcmp("abc", "ABC"); // Expect 1
-            printf("Expect 1 -> %d\n", result);
+                result = strcmp("abc", "ABC"); // Expect 1
+                printf("Expect 1 -> %d\n", result);
 
-            result = strcmp("ABC", "abc"); // Expect -1
-            printf("Expect -1 -> %d\n", result);
+                result = strcmp("ABC", "abc"); // Expect -1
+                printf("Expect -1 -> %d\n", result);
 
-            result = strcmp("\x01\x02\x03", "\x01\x02\x03"); // Expect 0
-            printf("Expect 0 -> %d\n", result);
+                result = strcmp("\x01\x02\x03", "\x01\x02\x03"); // Expect 0
+                printf("Expect 0 -> %d\n", result);
 
-            result = strcmp("\x01\x02\x03", "\x01\x02\x04"); // Expect -1
-            printf("Expect -1 -> %d\n", result);
+                result = strcmp("\x01\x02\x03", "\x01\x02\x04"); // Expect -1
+                printf("Expect -1 -> %d\n", result);
 
-            result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
-            printf("Expect 1 -> %d\n", result);
-            break;
-        case 'q': // Check for exit command
-            printf("Exiting...\r\n");
-            is_running = false;
-            break;
-        case 'c': // Check for clear screen command
-            clear();
-            break;
+                result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
+                printf("Expect 1 -> %d\n", result);
+                break;
+            case 'q': // Check for exit command
+                printf("Exiting...\r\n");
+                is_running = false;
+                break;
+            case 'c': // Check for clear screen command
+                clear();
+                break;
 
-        case 't': // Check for time command
-            gettime(&time_struct);
-            printf("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
-            break;
-        case 'd': // Check for date command
-            getdate(&date_struct);
-            printf("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
-            break;
-        default:
-            printf("Unknown command. Type 'h' for help.\r\n");
-            break;
+            case 't': // Check for time command
+                gettime(&time_struct);
+                printf("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+                break;
+            case 'd': // Check for date command
+                getdate(&date_struct);
+                printf("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
+                break;
+            default:
+                printf("Unknown command. Type 'h' for help.\r\n");
+                break;
         }
     }
 }
