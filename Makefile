@@ -1,9 +1,9 @@
 OUT_DIR    := build/
 SRC_DIRS   := kernel user
 
-# 1) Find every .c in those dirs
+# Find every .c in those dirs
 SRCS       := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))
-# 2) Strip their paths and map .c → build/*.o
+# Strip their paths and map .c → build/*.o
 OBJS       := $(patsubst %.c,$(OUT_DIR)%.o,$(notdir $(SRCS)))
 
 CROSS_COMPILE := arm-none-eabi-
@@ -14,7 +14,7 @@ OBJCOPY       := $(CROSS_COMPILE)objcopy
 
 # Compiler flags
 INC_DIRS   := -I./include
-ARCH_FLAGS := -march=armv5te -mcpu=arm926ej-s -marm
+ARCH_FLAGS := -mcpu=cortex-a8 -marm
 
 CFLAGS := -ffreestanding -nostdlib -nostartfiles \
           $(ARCH_FLAGS) -O2 -Wall -Wextra \
@@ -51,7 +51,7 @@ clean:
 
 qemu:
 	@echo "Press Ctrl-A then X to exit QEMU"
-	@qemu-system-arm -M versatilepb -nographic -kernel $(OUT_DIR)kernel.bin
+	@qemu-system-arm -M versatileab -cpu cortex-a8 -nographic -kernel $(OUT_DIR)kernel.bin
 
 docker:
 	docker build -t "astra-kernel" .
