@@ -60,7 +60,7 @@ tools installed on your system:
   \item \textbf{ARM Cross-Compiler:}  
   A cross-compiler targeting ARM is required to build the kernel. It 
   is recommended to use \texttt{arm-none-eabi-gcc}, \texttt{arm-none-eabi-ld}, 
-  and \texttt{arm-none-eabi-objcopy} for ARM926EJ-S, which is the target architecture
+  and \texttt{arm-none-eabi-objcopy} for Cortex-A8 processor with ARMv7-A, which is the target architecture
   for AstraKernel.
   \begin{itemize}
     \item Example installation: \texttt{arm-none-eabi-xxx} (available via package 
@@ -68,9 +68,9 @@ tools installed on your system:
   \end{itemize}
   
   \item \textbf{QEMU Emulator:}  
-  QEMU is used to emulate the ARM VersatilePB (ARM926EJ-S) platform for kernel development and testing.
+  QEMU is used to emulate the ARM VersatileAB (Cortex-A8) platform for kernel development and testing.
   \begin{itemize}
-    \item Ensure your QEMU installation supports the \texttt{versatilepb} machine.
+    \item Ensure your QEMU installation supports the \texttt{Cortex-A8} machine.
     \item Example installation: \texttt{qemu-system-arm} via  qemu \url{https://www.qemu.org/download/}.
   \end{itemize}
 
