@@ -8,7 +8,7 @@
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
-// Memory-mapped I/O registers for UART0 on QEMU versatilepb
+// Memory-mapped I/O registers for UART0 on QEMU versatileAB
 #define UART0_DR (*(volatile uint32_t *)0x101f1000) // Data Register
 #define UART0_FR (*(volatile uint32_t *)0x101f1018) // Flag Register
 

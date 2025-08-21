@@ -1,7 +1,7 @@
 # AstraKernel ~ A minimal ARM kernel for QEMU
 
 AstraKernel is a minimal experimental kernel written in C and ARM assembly, designed to run on 
-QEMU's VersatilePB (ARM926E) emulated platform. This project currently 
+QEMU's VersatileAB (Cortex-A8) emulated platform. This project currently 
 demonstrates how to bootstrap a system, set up the stack, zero the `.bss` 
 section, and perform basic UART output (printing text to the serial console).
 
@@ -11,7 +11,7 @@ section, and perform basic UART output (printing text to the serial console).
   Built May 15 2025 at 22:58:58
 ========================================
 
-  CPU: ARM926EJ-S @ 200MHz (simulated)
+  CPU: Cortex-A8 @ 200MHz (simulated)
   RAM: 128MB SDRAM at 0x00000000
 
 Welcome to your own little Astra world!
