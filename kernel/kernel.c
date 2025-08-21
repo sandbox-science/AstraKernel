@@ -12,7 +12,7 @@ static const char *banner[] = {
     "  Built " __DATE__ " at " __TIME__ "\r\n",
     "========================================\r\n",
     "\r\n",
-    "  CPU: ARM926EJ-S @ 200MHz (simulated)\r\n",
+    "  CPU: Cortex-A8 @ 200MHz (simulated)\r\n",
     "  RAM: 128MB SDRAM at 0x00000000\r\n",
     "\r\n",
     "Welcome to your own little Astra world!\r\n",
