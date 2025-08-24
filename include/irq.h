@@ -10,10 +10,10 @@ extern "C"
 
     void irq_handler(void);
 
-    extern void irq_enable(void);
-    extern void irq_disable(void);
+    void irq_enable(void);
+    void irq_disable(void);
 
-    extern volatile unsigned int irq_count;
+    extern volatile unsigned int tick;
 
 #ifdef __cplusplus
 }
