@@ -7,6 +7,7 @@
 #include "string.h"
 #include "irq.h"
 
+
 static const char *banner[] = {
     "========================================\r\n",
     "  AstraKernel  v0.1.0\r\n",
@@ -36,12 +37,12 @@ static void init_message(void)
 void irq_sanity_check(void)
 {
     irq_disable();
-    unsigned before = irq_count;
+    unsigned before = tick;
 
     irq_enable();
     irq_disable();
 
-    unsigned after = irq_count;
+    unsigned after = tick;
 
     if (before == after)
     {
@@ -53,13 +54,20 @@ void irq_sanity_check(void)
     }
 }
 
+/* The following macros are for testing purposes. */
+#define SANITY_CHECK        irq_sanity_check()
+#define CALL_SVC_0          __asm__ volatile ("svc #0")
+
 // Entry point for the kernel
 void kernel_main(void)
 {
     clear();
 
-    irq_sanity_check();
-    __asm__ volatile ("svc #0");
+    /* TEST */
+    SANITY_CHECK;
+    CALL_SVC_0;
+
+    /* Back to normal operations */
     init_message();
 
     char input_buffer[100];
