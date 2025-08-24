@@ -2,11 +2,11 @@
 
 #include "irq.h"
 
-volatile unsigned int irq_count = 0;
+volatile unsigned int tick = 0;
 
 void irq_handler(void)
 {
-    irq_count++;
+    tick++;
 }
 
 inline void irq_disable(void)
