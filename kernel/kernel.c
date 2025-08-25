@@ -87,10 +87,12 @@ void kernel_main(void)
 {
     clear();
 
-    /* TESTS */
-    //SANITY_CHECK;
-    //CALL_SVC_0;
-    //TIMER_TICK_TEST;
+/* TESTS */
+#ifdef USE_KTESTS 
+    SANITY_CHECK;
+    CALL_SVC_0;
+    TIMER_TICK_TEST;
+#endif
 
     /* Back to normal operations */
     init_message();
