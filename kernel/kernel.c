@@ -6,6 +6,7 @@
 #include "clear.h"
 #include "string.h"
 #include "irq.h"
+#include "interrupt.h"
 
 
 static const char *banner[] = {
@@ -54,7 +55,30 @@ void irq_sanity_check(void)
     }
 }
 
+// This function is for testing purposes.
+// It test that the timer interrupt is firing as expected.
+void not_main(void)
+{
+    puts("Time0 IRQ firing test!\r\n");
+
+    vic_enable_timer01_irq();
+    timer0_start_periodic(10000);
+    irq_enable();
+
+    unsigned last = 0;
+    for (;;)
+    {
+        unsigned n = tick;
+        if (n != last && (n % 100) == 0)
+        {
+            puts(".");
+            last = n;
+        }
+    }
+}
+
 /* The following macros are for testing purposes. */
+#define TIMER_TICK_TEST     not_main()
 #define SANITY_CHECK        irq_sanity_check()
 #define CALL_SVC_0          __asm__ volatile ("svc #0")
 
@@ -63,9 +87,10 @@ void kernel_main(void)
 {
     clear();
 
-    /* TEST */
-    SANITY_CHECK;
-    CALL_SVC_0;
+    /* TESTS */
+    //SANITY_CHECK;
+    //CALL_SVC_0;
+    //TIMER_TICK_TEST;
 
     /* Back to normal operations */
     init_message();
