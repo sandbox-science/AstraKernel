@@ -36,7 +36,7 @@ $(OUT_DIR)start.o: kernel/start.s
 # Pattern rule for any .c → build/*.o
 $(OUT_DIR)%.o: %.c
 	@mkdir -p $(OUT_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ $(KFLAG)
 
 # Link everything
 $(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld

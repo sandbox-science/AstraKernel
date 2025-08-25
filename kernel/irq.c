@@ -1,11 +1,13 @@
 #include <stdint.h>
 
 #include "irq.h"
+#include "interrupt.h"
 
 volatile unsigned int tick = 0;
 
 void irq_handler(void)
 {
+    T0_INTCLR = 1; // this ack/clear the device (SP804)
     tick++;
 }
 
