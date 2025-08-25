@@ -5,6 +5,8 @@
 #include "printf.h"
 #include "clear.h"
 #include "string.h"
+#include "irq.h"
+
 
 static const char *banner[] = {
     "========================================\r\n",
@@ -26,17 +28,47 @@ static void init_message(void)
     {
         puts(banner[i]);
     }
+
+    printf("AstraKernel is running...\r\n");
+    printf("Press Ctrl-A and then X to exit QEMU.\r\n");
+    printf("\r\n");
 }
+
+void irq_sanity_check(void)
+{
+    irq_disable();
+    unsigned before = tick;
+
+    irq_enable();
+    irq_disable();
+
+    unsigned after = tick;
+
+    if (before == after)
+    {
+        puts("\r\nA1 Sanity PASS: no spurious IRQs\r\n");
+    }
+    else
+    {
+        puts("\r\nA1 Sanity FAIL: unexpected IRQs\r\n");
+    }
+}
+
+/* The following macros are for testing purposes. */
+#define SANITY_CHECK        irq_sanity_check()
+#define CALL_SVC_0          __asm__ volatile ("svc #0")
 
 // Entry point for the kernel
 void kernel_main(void)
 {
     clear();
 
+    /* TEST */
+    SANITY_CHECK;
+    CALL_SVC_0;
+
+    /* Back to normal operations */
     init_message();
-    printf("AstraKernel is running...\r\n");
-    printf("Press Ctrl-A and then X to exit QEMU.\r\n");
-    printf("\r\n");
 
     char input_buffer[100];
 
@@ -59,25 +91,25 @@ void kernel_main(void)
                 break;
             case 'e':
                 int result = strcmp("abc", "abc"); // Expect 0
-                printf("Expect 0 -> %d\n", result);
+                printf("Expect 0 -> %d\r\n", result);
 
                 result = strcmp("abc", "abd"); // Expect -1
-                printf("Expect -1 -> %d\n", result);
+                printf("Expect -1 -> %d\r\n", result);
 
                 result = strcmp("abc", "ABC"); // Expect 1
-                printf("Expect 1 -> %d\n", result);
+                printf("Expect 1 -> %d\r\n", result);
 
                 result = strcmp("ABC", "abc"); // Expect -1
-                printf("Expect -1 -> %d\n", result);
+                printf("Expect -1 -> %d\r\n", result);
 
                 result = strcmp("\x01\x02\x03", "\x01\x02\x03"); // Expect 0
-                printf("Expect 0 -> %d\n", result);
+                printf("Expect 0 -> %d\r\n", result);
 
                 result = strcmp("\x01\x02\x03", "\x01\x02\x04"); // Expect -1
-                printf("Expect -1 -> %d\n", result);
+                printf("Expect -1 -> %d\r\n", result);
 
                 result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
-                printf("Expect 1 -> %d\n", result);
+                printf("Expect 1 -> %d\r\n", result);
                 break;
             case 'q': // Check for exit command
                 printf("Exiting...\r\n");
@@ -89,11 +121,11 @@ void kernel_main(void)
 
             case 't': // Check for time command
                 gettime(&time_struct);
-                printf("Current time(GMT): %d:%d:%d\n", time_struct.hrs, time_struct.mins, time_struct.secs);
+                printf("Current time(GMT): %d:%d:%d\r\n", time_struct.hrs, time_struct.mins, time_struct.secs);
                 break;
             case 'd': // Check for date command
                 getdate(&date_struct);
-                printf("Current date(MM-DD-YYYY): %d-%d-%d\n", date_struct.month, date_struct.day, date_struct.year);
+                printf("Current date(MM-DD-YYYY): %d-%d-%d\r\n", date_struct.month, date_struct.day, date_struct.year);
                 break;
             default:
                 printf("Unknown command. Type 'h' for help.\r\n");

@@ -9,8 +9,9 @@
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 // Memory-mapped I/O registers for UART0 on QEMU versatileAB
-#define UART0_DR (*(volatile uint32_t *)0x101f1000) // Data Register
-#define UART0_FR (*(volatile uint32_t *)0x101f1018) // Flag Register
+#define UART0_BASE 0x101F1000
+#define UART0_DR (*(volatile uint32_t *)UART0_BASE)          // Data Register
+#define UART0_FR (*(volatile uint32_t *)(UART0_BASE + 0x18)) // Flag Register
 
 static const uint32_t UART_FR_TXFF = (1U << 5); // Transmit FIFO Full
 static const uint32_t UART_FR_RXFE = (1U << 4); // Receive FIFO Empty

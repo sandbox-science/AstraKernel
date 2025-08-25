@@ -51,7 +51,7 @@ clean:
 
 qemu:
 	@echo "Press Ctrl-A then X to exit QEMU"
-	@qemu-system-arm -M versatileab -cpu cortex-a8 -nographic -kernel $(OUT_DIR)kernel.bin
+	@qemu-system-arm -M versatileab -m 128M -cpu cortex-a8 -nographic -kernel $(OUT_DIR)kernel.elf
 
 docker:
 	docker build -t "astra-kernel" .
