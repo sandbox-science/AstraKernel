@@ -34,6 +34,11 @@ Make sure you have an ARM cross-compiler installed (e.g., `arm-none-eabi-gcc`) a
 make
 ```
 
+Developers also have the option to run the kernel with custom flags such as:
+```sh
+make KFLAGS="-USE_KTESTS -MY_DEFFLAG"
+```
+
 > [!IMPORTANT]
 > 
 > `make` will clean, build, and run the kernel in QEMU. You can also run 
