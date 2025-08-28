@@ -331,9 +331,9 @@ void getlines(char *restrict buffer, size_t length)
         {
             break;
         }
-        if ((character == '\b' || character == 0x7F) && index > 0) // Check for backspace
+        if (character == '\b' || character == 0x7F) // Check for backspace
         {
-            if (cursor_position > 0)
+            if (cursor_position > 0 && index > 0) // Delete char if present
             {
                 long long initial_pos = cursor_position;
 
