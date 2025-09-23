@@ -3,9 +3,10 @@
 [![GitHub release (including pre-releases)](https://img.shields.io/github/v/release/sandbox-science/AstraKernel?include_prereleases)](https://github.com/sandbox-science/AstraKernel/releases)
 
 AstraKernel is a minimal experimental kernel written in modern C and ARM assembly, designed to run on
-**QEMU's VersatileAB (Cortex-A8)** platform. The purpose is educational, showing the fundamental
-steps of bringing up a bare-metal system, from low-level bootstrapping to higher-level interactive features
-to explore kernel development concepts.
+**QEMU’s Versatile AB/PB board with a Cortex‑A8 CPU override (-cpu cortex-a8)**. This setup keeps the
+simple Versatile peripheral map while enabling **ARMv7‑A** features for experimentation. 
+The purpose is educational, showing the fundamental steps of bringing up a bare-metal system, from 
+low-level bootstrapping to higher-level interactive features to explore kernel development concepts.
 
 ```bash
 ========================================
@@ -24,6 +25,19 @@ Press Ctrl-A and then X to exit QEMU.
 
 AstraKernel >
 ```
+
+## Target platform and configuration
+
+- Machine (board): `versatilepb` (or `versatileab`)
+- CPU model: `cortex-a8` (via `-cpu cortex-a8`)
+- Key peripherals (Versatile map):
+  - UART0 (PL011): 0x101F1000
+  - Timers (SP804): 0x101E2000
+  - Interrupt controller: VIC at 0x10140000
+  - SDRAM base: 0x00000000
+- Exception vectors: initially at 0x00000000 (32-byte aligned).
+  
+Later, the kernel may relocate vectors using VBAR once the MMU is enabled.
 
 ## Features so far
 
@@ -44,7 +58,7 @@ make
 
 Developers also have the option to run the kernel with custom flags, such as:
 ```sh
-make KFLAGS="-USE_KTESTS -MY_DEFFLAG"
+make KFLAGS="-DUSE_KTESTS -MY_DEFFLAG"
 ```
 
 > [!IMPORTANT]
@@ -63,7 +77,7 @@ make docker
 > [!IMPORTANT]
 > 
 > `make docker` will pull from the most recent `main` commit from the upstream repository
-> `https://github.com/sanbox-science/AstraKernel.git`.
+> `https://github.com/sandbox-science/AstraKernel.git`.
 > If you wish to use a local copy, you can run `make docker-dev`, which will copy all
 > local build files into the repository.
 
@@ -89,4 +103,4 @@ By using AstraKernel, you acknowledge that you understand these limitations.
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License. See the [LICENSE](LICENSE) file for details.
