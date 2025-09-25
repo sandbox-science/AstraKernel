@@ -20,8 +20,7 @@ static const uint32_t UART_FR_RXFE = (1U << 4); // Receive FIFO Empty
 static inline void putc(char c)
 {
     // Wait until UART transmit FIFO is not full
-    while (UART0_FR & UART_FR_TXFF)
-        ;
+    while (UART0_FR & UART_FR_TXFF) {}
     UART0_DR = (uint32_t)c;
 }
 
@@ -153,7 +152,7 @@ void puts(const char *s)
 }
 
 // Send a formatted string over UART
-void printf(char *s, ...)
+void printf(const char *s, ...)
 {
     va_list elem_list;
 
