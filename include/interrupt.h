@@ -13,9 +13,13 @@ extern "C"
 #define VIC_BASE        0x10140000u
 #define VIC_INTSELECT   (*(volatile uint32_t *)(VIC_BASE + 0x00C)) // 0=IRQ,1=FIQ
 #define VIC_INTENABLE   (*(volatile uint32_t *)(VIC_BASE + 0x010)) // set bit=enable
-#define VIC_INT_ENCLR   (*(volatile utin32_t *)(VIC_BASE + 0x014))
+#define VIC_INTENCLR    (*(volatile utin32_t *)(VIC_BASE + 0x014)) // clear bit=disable
 #define VIC_SOFT_INT    (*(volatile uint32_t *)(VIC_BASE + 0x018))
 #define VIC_SOFT_INTCLR (*(volatile uint32_t *)(VIC_BASE + 0x01C))
+
+#define VIC_IRQSTATUS   (*(volatile uint32_t *)(VIC_BASE + 0x000))
+#define VIC_VECTADDR    (*(volatile uint32_t *)(VIC_BASE + 0x030))
+#define VIC_DEFVECTADDR (*(volatile uint32_t *)(VIC_BASE + 0x034))
 
 // SP804 Timer0 in the 0/1 block
 // ref: ARM Dual-Time Module (SP804) TRM (Page 3-2)
@@ -35,6 +39,12 @@ extern "C"
 
 // VIC line number for Timer0/1 on Versatile
 #define IRQ_TIMER01 4
+
+    void irq_handler(void);
+    void irq_enable(void);
+    void irq_disable(void);
+
+    void interrupts_init_timer0(uint32_t tick_hz, uint32_t timer_clk_hz);
 
     static inline void timer0_start_periodic(uint32_t load)
     {
