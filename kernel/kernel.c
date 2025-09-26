@@ -5,9 +5,9 @@
 #include "printf.h"
 #include "clear.h"
 #include "string.h"
-#include "irq.h"
 #include "interrupt.h"
 
+ extern volatile uint64_t systicks; // this is declared in interrupt.c
 
 static const char *banner[] = {
     "========================================\r\n",
@@ -38,12 +38,12 @@ static void init_message(void)
 void irq_sanity_check(void)
 {
     irq_disable();
-    unsigned before = tick;
+    const unsigned before = systicks;
 
     irq_enable();
     irq_disable();
 
-    unsigned after = tick;
+    const unsigned after = systicks;
 
     if (before == after)
     {
@@ -61,18 +61,20 @@ void not_main(void)
 {
     puts("Time0 IRQ firing test!\r\n");
 
-    vic_enable_timer01_irq();
-    timer0_start_periodic(10000);
+    // Configure Timer0 for 100 Hz assuming 1 MHz timer clock in QEMU
+    interrupts_init_timer0(100, 1000000);
+
+    // Unmask CPU IRQs (I-bit = 0)
     irq_enable();
 
-    unsigned last = 0;
+    // Test loop: print a dot every ~100 ticks
+    uint64_t last = 0;
     for (;;)
     {
-        unsigned n = tick;
-        if (n != last && (n % 100) == 0)
+        if (systicks - last >= 100)
         {
+            last = systicks;
             puts(".");
-            last = n;
         }
     }
 }
