@@ -1,0 +1,189 @@
+
+Discarded input sections
+
+ .comment       0x00000000       0x13 build/interrupt.o
+ .comment       0x00000000       0x13 build/kernel.o
+ .comment       0x00000000       0x13 build/memory.o
+ .comment       0x00000000       0x13 build/panic.o
+ .comment       0x00000000       0x13 build/clear.o
+ .comment       0x00000000       0x13 build/datetime.o
+ .comment       0x00000000       0x13 build/printf.o
+ .comment       0x00000000       0x13 build/string.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAM              0x00000000         0x08000000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+                0x00000001                        ASSERT ((SIZEOF (.text) < 0x100000), Error: .text grew beyond the 1 MiB safety window)
+                0x00000000                        . = ORIGIN (RAM)
+
+.vectors        0x00000000       0x20
+ *(.vectors)
+ .vectors       0x00000000       0x20 build/start.o
+                0x00010000                        . = 0x10000
+
+.text           0x00010000      0xed4
+                0x00010000                        __text_start = .
+ *(.text .text.*)
+ .text          0x00010000       0x3c build/start.o
+                0x00010000                svc_entry
+                0x00010014                irq_entry
+ *fill*         0x0001003c        0x4 
+ .text.startup  0x00010040       0xd4 build/start.o
+                0x00010040                _start
+ .text          0x00010114      0x130 build/interrupt.o
+                0x00010114                interrupts_init_timer0
+                0x000101cc                irq_handler
+                0x00010230                irq_disable
+                0x00010238                irq_enable
+ .text          0x00010244       0xc0 build/kernel.o
+                0x00010244                irq_sanity_check
+                0x0001028c                not_main
+                0x000102f0                kernel_main
+ .text          0x00010304        0x4 build/memory.o
+                0x00010304                kmalloc_init
+ .text          0x00010308       0x28 build/panic.o
+                0x00010308                kernel_halt
+                0x00010318                kernel_panic
+ .text          0x00010330       0x20 build/clear.o
+                0x00010330                clear
+ .text          0x00010350      0x1e4 build/datetime.o
+                0x00010350                getdate
+                0x000104b4                gettime
+ .text          0x00010534      0x93c build/printf.o
+                0x00010534                _bdiv
+                0x000105e0                _putunsignedlong
+                0x0001071c                _putunsignedint
+                0x00010740                _puthexsmall
+                0x00010764                _puthexcapital
+                0x00010788                _putintegers
+                0x000108a0                _validate_format_specifier
+                0x000108dc                puts
+                0x00010910                printf
+                0x00010af4                getlines
+ .text          0x00010e70       0x64 build/string.o
+                0x00010e70                strcmp
+                0x00010ea8                strlen
+                0x00010ed4                        __text_end = .
+
+.glue_7         0x00010ed4        0x0
+ .glue_7        0x00010ed4        0x0 linker stubs
+
+.glue_7t        0x00010ed4        0x0
+ .glue_7t       0x00010ed4        0x0 linker stubs
+
+.vfp11_veneer   0x00010ed4        0x0
+ .vfp11_veneer  0x00010ed4        0x0 linker stubs
+
+.v4_bx          0x00010ed4        0x0
+ .v4_bx         0x00010ed4        0x0 linker stubs
+
+.iplt           0x00010ed4        0x0
+ .iplt          0x00010ed4        0x0 build/start.o
+
+.rodata         0x00011000       0xb7
+                0x00011000                        __rodata_start = .
+ *(.rodata .rodata.*)
+ .rodata        0x00011000       0x19 build/start.o
+ *fill*         0x00011019        0x3 
+ .rodata.str1.4
+                0x0001101c       0x9b build/kernel.o
+                                 0x6a (size before relaxing)
+ .rodata.str1.4
+                0x000110b7        0x0 build/panic.o
+                                  0x3 (size before relaxing)
+ .rodata.str1.4
+                0x000110b7        0x0 build/clear.o
+                                  0xc (size before relaxing)
+ .rodata.str1.4
+                0x000110b7        0x0 build/printf.o
+                                 0x23 (size before relaxing)
+                0x000110b7                        __rodata_end = .
+
+.rel.dyn        0x000110b8        0x0
+ .rel.iplt      0x000110b8        0x0 build/start.o
+
+.data           0x00012000       0x30
+                0x00012000                        __data_start = .
+ *(.data)
+ .data          0x00012000        0x0 build/start.o
+ .data          0x00012000        0x0 build/interrupt.o
+ .data          0x00012000        0x0 build/kernel.o
+ .data          0x00012000        0x0 build/memory.o
+ .data          0x00012000        0x0 build/panic.o
+ .data          0x00012000        0x0 build/clear.o
+ .data          0x00012000       0x30 build/datetime.o
+ .data          0x00012030        0x0 build/printf.o
+ .data          0x00012030        0x0 build/string.o
+                0x00012030                        __data_end = .
+                0x00012000                        __data_load = LOADADDR (.data)
+
+.igot.plt       0x00012030        0x0
+ .igot.plt      0x00012030        0x0 build/start.o
+
+.ptables        0x00014000     0x4000
+                0x00014000                        __ptables_start = .
+                0x00018000                        . = (. + 0x4000)
+ *fill*         0x00014000     0x4000 
+                0x00018000                        __ptables_end = .
+
+.bss            0x00018000      0x408
+                0x00018000                        __bss_start = .
+ *(.bss .bss.*)
+ .bss           0x00018000      0x400 build/start.o
+ .bss           0x00018400        0x8 build/interrupt.o
+                0x00018400                systicks
+ .bss           0x00018408        0x0 build/kernel.o
+ .bss           0x00018408        0x0 build/memory.o
+ .bss           0x00018408        0x0 build/panic.o
+ .bss           0x00018408        0x0 build/clear.o
+ .bss           0x00018408        0x0 build/datetime.o
+ .bss           0x00018408        0x0 build/printf.o
+ .bss           0x00018408        0x0 build/string.o
+ *(.sbss .sbss.*)
+ *(COMMON)
+                0x00018408                        __bss_end = .
+                0x08000000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
+                0x00018708                        _eheap = ALIGN (__bss_end)
+
+/DISCARD/
+ *(.comment)
+ *(.note*)
+ *(.debug* .gnu.debug*)
+ *(.stab* .stabstr*)
+LOAD build/start.o
+LOAD build/interrupt.o
+LOAD build/kernel.o
+LOAD build/memory.o
+LOAD build/panic.o
+LOAD build/clear.o
+LOAD build/datetime.o
+LOAD build/printf.o
+LOAD build/string.o
+OUTPUT(build/kernel.elf elf32-littlearm)
+LOAD linker stubs
+
+.ARM.attributes
+                0x00000000       0x2d
+ .ARM.attributes
+                0x00000000       0x1d build/start.o
+ .ARM.attributes
+                0x0000001d       0x31 build/interrupt.o
+ .ARM.attributes
+                0x0000004e       0x31 build/kernel.o
+ .ARM.attributes
+                0x0000007f       0x31 build/memory.o
+ .ARM.attributes
+                0x000000b0       0x31 build/panic.o
+ .ARM.attributes
+                0x000000e1       0x31 build/clear.o
+ .ARM.attributes
+                0x00000112       0x31 build/datetime.o
+ .ARM.attributes
+                0x00000143       0x31 build/printf.o
+ .ARM.attributes
+                0x00000174       0x31 build/string.o

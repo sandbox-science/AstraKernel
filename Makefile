@@ -40,7 +40,7 @@ $(OUT_DIR)%.o: %.c
 
 # Link everything
 $(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld
-	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@
+	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@ -Map=map_file.map
 
 # Binary and others unchanged
 kernel.bin: $(OUT_DIR)kernel.elf
