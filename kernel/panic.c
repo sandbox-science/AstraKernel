@@ -4,12 +4,18 @@
 /**
  * @brief Halt the CPU indefinitely.
  */
-__attribute__((noreturn)) void kernel_halt(void)
+[[noreturn]] void kernel_halt(void)
 {
-    __asm__ volatile("cpsid i\n cpsid f\n"); // disable interrupts
+    __asm__ volatile(
+        "cpsid i\n\t"
+        "cpsid f\n\t"
+        :
+        :
+        : "memory"  // this prevent reordering of memory operations
+    ); // disable interrupts
     for (;;)
     {
-        __asm__ volatile("wfi");    // wait for interrupt
+        __asm__ volatile("wfi" ::: "memory");    // wait for interrupt
     }
 }
 
@@ -21,7 +27,7 @@ __attribute__((noreturn)) void kernel_halt(void)
  * @todo implement a custom error message with error codes ( errno.h/.c )
  *       ex: https://github.com/dthain/basekernel/blob/master/library/errno.c
  */
-void kernel_panic(const char *message)
+[[noreturn]] void kernel_panic(const char *message)
 {
     printf("%s", message);
     kernel_halt();
