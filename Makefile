@@ -16,7 +16,7 @@ OBJCOPY       := $(CROSS_COMPILE)objcopy
 INC_DIRS   := -I./include
 ARCH_FLAGS := -mcpu=cortex-a8 -marm
 
-CFLAGS := -ffreestanding -nostdlib -nostartfiles \
+CFLAGS := -std=c23 -ffreestanding -nostdlib -nostartfiles \
           $(ARCH_FLAGS) -O2 -Wall -Wextra \
           -fno-builtin \
           $(INC_DIRS)
