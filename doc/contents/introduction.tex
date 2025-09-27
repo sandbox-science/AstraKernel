@@ -18,7 +18,7 @@ at startup: \\
 
 _start:
     // Set up the stack pointer
-    LDR sp, =_estack
+    LDR sp, =__stack_top__
     BIC sp, sp, #7
 
     // Zero the .bss section
