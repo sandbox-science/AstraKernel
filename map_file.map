@@ -26,7 +26,7 @@ Linker script and memory map
  .vectors       0x00000000       0x20 build/start.o
                 0x00010000                        . = 0x10000
 
-.text           0x00010000      0xed4
+.text           0x00010000     0x1274
                 0x00010000                        __text_start = .
  *(.text .text.*)
  .text          0x00010000       0x3c build/start.o
@@ -40,90 +40,97 @@ Linker script and memory map
                 0x000101cc                irq_handler
                 0x00010230                irq_disable
                 0x00010238                irq_enable
- .text          0x00010244       0xc0 build/kernel.o
+ .text          0x00010244      0x334 build/kernel.o
                 0x00010244                irq_sanity_check
                 0x0001028c                not_main
-                0x000102f0                kernel_main
- .text          0x00010304        0x4 build/memory.o
-                0x00010304                kmalloc_init
- .text          0x00010308       0x28 build/panic.o
-                0x00010308                kernel_halt
-                0x00010318                kernel_panic
- .text          0x00010330       0x20 build/clear.o
-                0x00010330                clear
- .text          0x00010350      0x1e4 build/datetime.o
-                0x00010350                getdate
-                0x000104b4                gettime
- .text          0x00010534      0x93c build/printf.o
-                0x00010534                _bdiv
-                0x000105e0                _putunsignedlong
-                0x0001071c                _putunsignedint
-                0x00010740                _puthexsmall
-                0x00010764                _puthexcapital
-                0x00010788                _putintegers
-                0x000108a0                _validate_format_specifier
-                0x000108dc                puts
-                0x00010910                printf
-                0x00010af4                getlines
- .text          0x00010e70       0x64 build/string.o
-                0x00010e70                strcmp
-                0x00010ea8                strlen
-                0x00010ed4                        __text_end = .
+                0x0001033c                kernel_main
+ .text          0x00010578      0x130 build/memory.o
+                0x00010578                kmalloc_init
+                0x000105d8                kmalloc
+                0x0001066c                kmalloc_remaining
+ .text          0x000106a8       0x28 build/panic.o
+                0x000106a8                kernel_halt
+                0x000106b8                kernel_panic
+ .text          0x000106d0       0x20 build/clear.o
+                0x000106d0                clear
+ .text          0x000106f0      0x1e4 build/datetime.o
+                0x000106f0                getdate
+                0x00010854                gettime
+ .text          0x000108d4      0x93c build/printf.o
+                0x000108d4                _bdiv
+                0x00010980                _putunsignedlong
+                0x00010abc                _putunsignedint
+                0x00010ae0                _puthexsmall
+                0x00010b04                _puthexcapital
+                0x00010b28                _putintegers
+                0x00010c40                _validate_format_specifier
+                0x00010c7c                puts
+                0x00010cb0                printf
+                0x00010e94                getlines
+ .text          0x00011210       0x64 build/string.o
+                0x00011210                strcmp
+                0x00011248                strlen
+                0x00011274                        __text_end = .
 
-.glue_7         0x00010ed4        0x0
- .glue_7        0x00010ed4        0x0 linker stubs
+.glue_7         0x00011274        0x0
+ .glue_7        0x00011274        0x0 linker stubs
 
-.glue_7t        0x00010ed4        0x0
- .glue_7t       0x00010ed4        0x0 linker stubs
+.glue_7t        0x00011274        0x0
+ .glue_7t       0x00011274        0x0 linker stubs
 
-.vfp11_veneer   0x00010ed4        0x0
- .vfp11_veneer  0x00010ed4        0x0 linker stubs
+.vfp11_veneer   0x00011274        0x0
+ .vfp11_veneer  0x00011274        0x0 linker stubs
 
-.v4_bx          0x00010ed4        0x0
- .v4_bx         0x00010ed4        0x0 linker stubs
+.v4_bx          0x00011274        0x0
+ .v4_bx         0x00011274        0x0 linker stubs
 
-.iplt           0x00010ed4        0x0
- .iplt          0x00010ed4        0x0 build/start.o
+.iplt           0x00011274        0x0
+ .iplt          0x00011274        0x0 build/start.o
 
-.rodata         0x00011000       0xb7
-                0x00011000                        __rodata_start = .
+.rodata         0x00012000      0x470
+                0x00012000                        __rodata_start = .
  *(.rodata .rodata.*)
- .rodata        0x00011000       0x19 build/start.o
- *fill*         0x00011019        0x3 
+ .rodata        0x00012000       0x19 build/start.o
+ *fill*         0x00012019        0x3 
  .rodata.str1.4
-                0x0001101c       0x9b build/kernel.o
-                                 0x6a (size before relaxing)
+                0x0001201c      0x413 build/kernel.o
+                                0x368 (size before relaxing)
+ *fill*         0x0001242f        0x1 
+ .rodata        0x00012430       0x40 build/kernel.o
  .rodata.str1.4
-                0x000110b7        0x0 build/panic.o
+                0x00012470        0x0 build/memory.o
+                                 0x7b (size before relaxing)
+ .rodata.str1.4
+                0x00012470        0x0 build/panic.o
                                   0x3 (size before relaxing)
  .rodata.str1.4
-                0x000110b7        0x0 build/clear.o
+                0x00012470        0x0 build/clear.o
                                   0xc (size before relaxing)
  .rodata.str1.4
-                0x000110b7        0x0 build/printf.o
+                0x00012470        0x0 build/printf.o
                                  0x23 (size before relaxing)
-                0x000110b7                        __rodata_end = .
+                0x00012470                        __rodata_end = .
 
-.rel.dyn        0x000110b8        0x0
- .rel.iplt      0x000110b8        0x0 build/start.o
+.rel.dyn        0x00012470        0x0
+ .rel.iplt      0x00012470        0x0 build/start.o
 
-.data           0x00012000       0x30
-                0x00012000                        __data_start = .
+.data           0x00013000       0x30
+                0x00013000                        __data_start = .
  *(.data)
- .data          0x00012000        0x0 build/start.o
- .data          0x00012000        0x0 build/interrupt.o
- .data          0x00012000        0x0 build/kernel.o
- .data          0x00012000        0x0 build/memory.o
- .data          0x00012000        0x0 build/panic.o
- .data          0x00012000        0x0 build/clear.o
- .data          0x00012000       0x30 build/datetime.o
- .data          0x00012030        0x0 build/printf.o
- .data          0x00012030        0x0 build/string.o
-                0x00012030                        __data_end = .
-                0x00012000                        __data_load = LOADADDR (.data)
+ .data          0x00013000        0x0 build/start.o
+ .data          0x00013000        0x0 build/interrupt.o
+ .data          0x00013000        0x0 build/kernel.o
+ .data          0x00013000        0x0 build/memory.o
+ .data          0x00013000        0x0 build/panic.o
+ .data          0x00013000        0x0 build/clear.o
+ .data          0x00013000       0x30 build/datetime.o
+ .data          0x00013030        0x0 build/printf.o
+ .data          0x00013030        0x0 build/string.o
+                0x00013030                        __data_end = .
+                0x00013000                        __data_load = LOADADDR (.data)
 
-.igot.plt       0x00012030        0x0
- .igot.plt      0x00012030        0x0 build/start.o
+.igot.plt       0x00013030        0x0
+ .igot.plt      0x00013030        0x0 build/start.o
 
 .ptables        0x00014000     0x4000
                 0x00014000                        __ptables_start = .
@@ -131,24 +138,27 @@ Linker script and memory map
  *fill*         0x00014000     0x4000 
                 0x00018000                        __ptables_end = .
 
-.bss            0x00018000      0x408
+.bss            0x00018000      0x410
                 0x00018000                        __bss_start = .
  *(.bss .bss.*)
  .bss           0x00018000      0x400 build/start.o
  .bss           0x00018400        0x8 build/interrupt.o
                 0x00018400                systicks
  .bss           0x00018408        0x0 build/kernel.o
- .bss           0x00018408        0x0 build/memory.o
- .bss           0x00018408        0x0 build/panic.o
- .bss           0x00018408        0x0 build/clear.o
- .bss           0x00018408        0x0 build/datetime.o
- .bss           0x00018408        0x0 build/printf.o
- .bss           0x00018408        0x0 build/string.o
+ .bss           0x00018408        0x8 build/memory.o
+ .bss           0x00018410        0x0 build/panic.o
+ .bss           0x00018410        0x0 build/clear.o
+ .bss           0x00018410        0x0 build/datetime.o
+ .bss           0x00018410        0x0 build/printf.o
+ .bss           0x00018410        0x0 build/string.o
  *(.sbss .sbss.*)
  *(COMMON)
-                0x00018408                        __bss_end = .
-                0x08000000                        _estack = (ORIGIN (RAM) + LENGTH (RAM))
-                0x00018708                        _eheap = ALIGN (__bss_end)
+                0x00018410                        __bss_end = .
+                0x08000000                        __stack_top__ = (ORIGIN (RAM) + LENGTH (RAM))
+                0x07ff0000                        __stack_bottom__ = (__stack_top__ - 0x10000)
+                0x00018410                        __heap_start__ = .
+                0x07ff0000                        __heap_end__ = __stack_bottom__
+                0x07fd7bf0                        __heap_size__ = (__heap_end__ - __heap_start__)
 
 /DISCARD/
  *(.comment)
