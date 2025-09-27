@@ -32,7 +32,7 @@ vectors_base:
     .extern kernel_main
     .extern __bss_start
     .extern __bss_end
-    .extern _estack
+    .extern __stack_top__
 _start:
     // Enable Supervisor (SVC) mode explicitly and mask IRQ/FIQ
     MRS     R0, cpsr            // R0 <- CPSR (current status)
@@ -56,7 +56,7 @@ _start:
     ISB
 
     // Set SVC stack pointer (top of the RAM)
-    LDR     sp, =_estack
+    LDR     sp, =__stack_top__
     BIC     sp, sp, #7            // Align to 8 bytes
 
     // Switch to IRQ mode by init its own stack

@@ -66,10 +66,15 @@ SECTIONS
     } > RAM
 
     /* Stack pointer = top of RAM */
-    _estack = ORIGIN(RAM) + LENGTH(RAM);
+    __stack_top__ = ORIGIN(RAM) + LENGTH(RAM);
+    
+    /* Reserve space for kernel stacks (64 KiB total) */
+    __stack_bottom__ = __stack_top__ - 64K;
 
     /* Heap starts right after .bss */
-    _eheap = ALIGN(__bss_end);
+    __heap_start__ = .;
+    __heap_end__ = __stack_bottom__;
+    __heap_size__ = __heap_end__ - __heap_start__;
     
     /* Discard unneeded sections to keep image lean */
     /DISCARD/ :
