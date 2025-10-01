@@ -8,10 +8,12 @@
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
+// TODO: See to move this mathematical operation to math.c/.h
+// Maybe have a file with the macros?
 // Memory-mapped I/O registers for UART0 on QEMU versatileAB
-#define UART0_BASE 0x101F1000
-#define UART0_DR (*(volatile uint32_t *)UART0_BASE)          // Data Register
-#define UART0_FR (*(volatile uint32_t *)(UART0_BASE + 0x18)) // Flag Register
+#define     UART0_BASE  0x101F1000
+#define     UART0_DR    (*(volatile uint32_t *)UART0_BASE)          // Data Register
+#define     UART0_FR    (*(volatile uint32_t *)(UART0_BASE + 0x18)) // Flag Register
 
 static const uint32_t UART_FR_TXFF = (1U << 5); // Transmit FIFO Full
 static const uint32_t UART_FR_RXFE = (1U << 4); // Receive FIFO Empty
@@ -24,6 +26,7 @@ static inline void putc(char c)
     UART0_DR = (uint32_t)c;
 }
 
+// TODO: potentially move those functions to math.c/.h
 unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
 {
     // INFO: Currently, this algorithm involves dividing only by 10 and 16. So, division by zero should not be a problem, yet.
@@ -190,7 +193,7 @@ void printf(const char *s, ...)
             }
             case 'l':
             {
-                format_state.in_format = true;
+                format_state.in_format   = true;
                 format_state.long_format = true;
                 s += 1; // Evaluate the immediate next char
                 continue;
@@ -226,8 +229,7 @@ void printf(const char *s, ...)
 
                 break;
             }
-            }
-
+            } // end switch case
             s += 2; // Skip format specifier
         }
         else
@@ -243,8 +245,7 @@ void printf(const char *s, ...)
 static inline char getc(void)
 {
     // Wait until UART receive FIFO is not empty
-    while (UART0_FR & UART_FR_RXFE)
-        ;
+    while (UART0_FR & UART_FR_RXFE) {}
     return (char)(UART0_DR & 0xFF);
 }
 
@@ -315,14 +316,12 @@ void getlines(char *restrict buffer, size_t length)
                     arrow_keys = 0;
                 }
             }
-
             escape++;
 
             if (escape == 3) // Escape sequence is 3 characters long
             {
                 escape = 0;
             }
-
             continue;
         }
 
@@ -349,7 +348,9 @@ void getlines(char *restrict buffer, size_t length)
                 cursor_position--;
 
                 if (cond)
+                {
                     printf("\033[%ldC", (index - cursor_position));
+                }
 
                 putc('\b'); // Move cursor back
                 putc(' ');  // Clear the character
