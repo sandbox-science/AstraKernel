@@ -10,7 +10,7 @@ OUTPUT_DIRECTORY       = docs
 # Input
 #----------------------------------------------------------
 # Scan both source and header files + markdown pages
-INPUT                  = kernel user include docs/pages
+INPUT                  = kernel user include docs/pages README.md
 FILE_PATTERNS          = *.c *.h *.md *.s *.ld
 RECURSIVE              = YES
 EXCLUDE_PATTERNS       = */tests/* */build/* */literature/*
@@ -68,5 +68,5 @@ DOT_MULTI_TARGETS      = YES
 #----------------------------------------------------------
 # Markdown / Main Page
 #----------------------------------------------------------
-USE_MDFILE_AS_MAINPAGE = README.md
+USE_MDFILE_AS_MAINPAGE = ./README.md
 MARKDOWN_SUPPORT       = YES
