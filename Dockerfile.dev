@@ -15,8 +15,8 @@ RUN apt-get update && apt-get install -y \
 
 # 2. Copy from local FS
 COPY include/ /AstraKernel/include
-COPY kernel/ /AstraKernel/kernel
-COPY user/ /AstraKernel/user
+COPY src/kernel/ /AstraKernel/src/kernel
+COPY src/user/ /AstraKernel/src/user
 COPY kernel.ld /AstraKernel
 COPY Makefile /AstraKernel
 WORKDIR /AstraKernel

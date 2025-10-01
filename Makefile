@@ -1,5 +1,5 @@
 OUT_DIR    := build/
-SRC_DIRS   := kernel user
+SRC_DIRS   := src/kernel src/user
 
 # Find every .c in those dirs
 SRCS       := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))
@@ -29,7 +29,7 @@ VPATH := $(SRC_DIRS)
 all: clean kernel.bin qemu
 
 # Assembly start.o goes to build/
-$(OUT_DIR)start.o: kernel/start.s
+$(OUT_DIR)start.o: src/kernel/start.s
 	@mkdir -p $(OUT_DIR)
 	$(AS) -c $< -o $@
 
