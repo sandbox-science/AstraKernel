@@ -53,7 +53,7 @@ QUIET                  = NO
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 GENERATE_LATEX         = NO
-GENERATE_MAN           = YES
+GENERATE_MAN           = NO
 GENERATE_XML           = NO
 
 #----------------------------------------------------------
