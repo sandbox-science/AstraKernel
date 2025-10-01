@@ -2,7 +2,17 @@
 #include "printf.h"
 
 /**
+ * @internal
  * @brief Halt the CPU indefinitely.
+ *
+ * Implementation details:
+ * - Disables both IRQ (`cpsid i`) and FIQ (`cpsid f`) interrupts.
+ * - Uses `wfi` (Wait For Interrupt) to place the CPU in a low-power
+ *   idle loop.
+ * - The `memory` clobber ensures no memory operations are reordered
+ *   around this sequence.
+ *
+ * @see kernel_panic()
  */
 [[noreturn]] void kernel_halt(void)
 {
@@ -11,21 +21,26 @@
         "cpsid f\n\t"
         :
         :
-        : "memory"  // this prevent reordering of memory operations
-    ); // disable interrupts
+        : "memory"
+    );
+
     for (;;)
     {
-        __asm__ volatile("wfi" ::: "memory");    // wait for interrupt
+        __asm__ volatile("wfi" ::: "memory");
     }
 }
 
 /**
- * @brief Print a panic message and halt the CPU
+ * @internal
+ * @brief Print a panic message and halt the CPU.
  *
- * @param message: the reason of raising a panic.
+ * Implementation details:
+ * - Currently uses `printf()` to display the error message.
+ * - Calls ::kernel_halt() after printing.
  *
- * @todo implement a custom error message with error codes ( errno.h/.c )
- *       ex: https://github.com/dthain/basekernel/blob/master/library/errno.c
+ * @todo Replace string-only message with structured error codes
+ *       (see errno.h/.c).
+ *       https://github.com/dthain/basekernel/blob/master/library/errno.c
  */
 [[noreturn]] void kernel_panic(const char *message)
 {
