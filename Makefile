@@ -61,4 +61,8 @@ docker-dev:
 	docker build -f Dockerfile.dev -t "astra-kernel-dev" .
 	docker run -it --rm "astra-kernel-dev"
 
-.PHONY: all clean qemu docker
+docs:
+	mkdir -p docs
+	doxygen Doxyfile
+
+.PHONY: all clean qemu docker docs
