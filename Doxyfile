@@ -1,0 +1,72 @@
+#----------------------------------------------------------
+# Project Identity
+#----------------------------------------------------------
+PROJECT_NAME           = "AstraKernel"
+PROJECT_NUMBER         = "v0.1.0"
+PROJECT_BRIEF          = "A minimalist experimental ARM kernel"
+OUTPUT_DIRECTORY       = docs
+
+#----------------------------------------------------------
+# Input
+#----------------------------------------------------------
+# Scan both source and header files + markdown pages
+INPUT                  = kernel user include docs/pages README.md
+FILE_PATTERNS          = *.c *.h *.md *.s *.ld
+RECURSIVE              = YES
+EXCLUDE_PATTERNS       = */tests/* */build/* */literature/*
+
+#----------------------------------------------------------
+# Documentation Extraction
+#----------------------------------------------------------
+# Merge header + source comments for the same function
+JAVADOC_AUTOBRIEF      = YES
+MULTILINE_CPP_IS_BRIEF = YES
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+EXTRACT_LOCAL_CLASSES  = YES
+INTERNAL_DOCS          = YES
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = NO    # Set to YES if you want code in docs
+
+#----------------------------------------------------------
+# Preprocessing / Macros
+#----------------------------------------------------------
+ENABLE_PREPROCESSING   = YES
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = NO
+PREDEFINED             = __attribute__(x)= \
+                         asm(x)= \
+                         __asm__= \
+                         KERNEL=1
+
+#----------------------------------------------------------
+# Warnings
+#----------------------------------------------------------
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO
+QUIET                  = NO
+
+#----------------------------------------------------------
+# Output Formats
+#----------------------------------------------------------
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+GENERATE_MAN           = NO
+GENERATE_XML           = NO
+
+#----------------------------------------------------------
+# Diagrams / Graphs
+#----------------------------------------------------------
+HAVE_DOT               = YES
+DOT_IMAGE_FORMAT       = svg
+CALL_GRAPH             = YES
+CALLER_GRAPH           = YES
+DOT_MULTI_TARGETS      = YES
+
+#----------------------------------------------------------
+# Markdown / Main Page
+#----------------------------------------------------------
+USE_MDFILE_AS_MAINPAGE = ./README.md
+MARKDOWN_SUPPORT       = YES

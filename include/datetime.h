@@ -24,7 +24,7 @@ extern "C"
     } dateval;
 
     uint32_t getdate(dateval *date);
-    uint32_t gettime(timeval *time);
+    uint32_t gettime(timeval *time_struct);
 
 #ifdef __cplusplus
 }

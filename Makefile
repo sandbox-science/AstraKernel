@@ -16,7 +16,7 @@ OBJCOPY       := $(CROSS_COMPILE)objcopy
 INC_DIRS   := -I./include
 ARCH_FLAGS := -mcpu=cortex-a8 -marm
 
-CFLAGS := -ffreestanding -nostdlib -nostartfiles \
+CFLAGS := -std=c23 -ffreestanding -nostdlib -nostartfiles \
           $(ARCH_FLAGS) -O2 -Wall -Wextra \
           -fno-builtin \
           $(INC_DIRS)
@@ -40,7 +40,7 @@ $(OUT_DIR)%.o: %.c
 
 # Link everything
 $(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld
-	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@
+	$(LD) $(LDFLAGS) $(OUT_DIR)start.o $(OBJS) -o $@ -Map=map_file.map
 
 # Binary and others unchanged
 kernel.bin: $(OUT_DIR)kernel.elf
@@ -61,4 +61,8 @@ docker-dev:
 	docker build -f Dockerfile.dev -t "astra-kernel-dev" .
 	docker run -it --rm "astra-kernel-dev"
 
-.PHONY: all clean qemu docker
+docs:
+	mkdir -p docs
+	doxygen Doxyfile
+
+.PHONY: all clean qemu docker docs

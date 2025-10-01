@@ -32,7 +32,7 @@ vectors_base:
     .extern kernel_main
     .extern __bss_start
     .extern __bss_end
-    .extern _estack
+    .extern __stack_top__
 _start:
     // Enable Supervisor (SVC) mode explicitly and mask IRQ/FIQ
     MRS     R0, cpsr            // R0 <- CPSR (current status)
@@ -46,16 +46,17 @@ _start:
     // to force low vector mode (needed for MMU)
     // ref: https://developer.arm.com/documentation/ddi0406/b/System-Level-Architecture/Virtual-Memory-System-Architecture--VMSA-/CP15-registers-for-a-VMSA-implementation/c12--Vector-Base-Address-Register--VBAR-
     LDR     R0, =vectors_base       // 32B aligned base of .vectors
-    MCR     P15, 0, R0, C12, C0, 0  // Read  CP15 Vector Base Address Register (VBAR)
+    MCR     P15, 0, R0, C12, C0, 0  // Write  CP15 Vector Base Address Register (VBAR)
     ISB                             // This ensure new base is used for exception fetches
 
-    MRC     P15, 0, R1, C1, C0, 0       // Write CP15 VBAR
+    // Ensure high vectors are disabled: SCTLR.V = 0
+    MRC     P15, 0, R1, C1, C0, 0       // Read CP15 VBAR
     BIC     R1, R1, #(1 << 13)          // Clear SCTLR.V (high vectors off)
-    MCR     P15, 0, R1, C1, C0, 0
+    MCR     P15, 0, R1, C1, C0, 0       // Write R1 to SCTLR
     ISB
 
     // Set SVC stack pointer (top of the RAM)
-    LDR     sp, =_estack
+    LDR     sp, =__stack_top__
     BIC     sp, sp, #7            // Align to 8 bytes
 
     // Switch to IRQ mode by init its own stack
@@ -75,6 +76,21 @@ _start:
     ORR     R1, R1, #(1 << 7)      // I = 1 (IRQ)
     ORR     R1, R1, #(1 << 6)      // F = 1 (FIQ)
     MSR     cpsr_c, R1             // Back to SVC
+    
+    .extern __data_load
+    .extern __data_start
+    .extern __data_end
+
+    LDR     R0, =__data_load
+    LDR     R1, =__data_start
+    LDR     R2, =__data_end
+1:
+    CMP     R1, R2
+    BGE     2f
+    LDR     R3, [R0], #4
+    STR     R3, [R1], #4
+    B       1b
+2:
 
     // Zero init the .bss section
     LDR     R0, =__bss_start

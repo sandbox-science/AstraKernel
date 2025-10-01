@@ -19,7 +19,7 @@ extern "C"
     } Format_State;
 
     void puts(const char *s);
-    void printf(char *s, ...);
+    void printf(const char *s, ...);
     void getlines(char *restrict buffer, size_t length);
 
 #ifdef __cplusplus
