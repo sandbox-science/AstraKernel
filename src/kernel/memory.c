@@ -5,10 +5,10 @@
 #include <stdatomic.h>
 
 // Default alignment: at least pointer size; 16 is a good general default.
-static const size_t KMALLOC_DEFAULT_ALIGN = (16 < sizeof(void*) ? sizeof(void*) : 16);
+static const size_t KMALLOC_ALIGN = (16 < sizeof(void*) ? sizeof(void*) : 16);
 
 static _Atomic uintptr_t heap_cur = 0; // atomic in case of future multi core
-static uintptr_t heap_end = 0;
+static uintptr_t heap_end         = 0;
 
 static inline uintptr_t align_up_uintptr(uintptr_t x, size_t align)
 {
@@ -24,8 +24,8 @@ void kmalloc_init(void *start, void *limit)
         kernel_panic("kmalloc_init: invalid heap range");
     }
     
-    const uintptr_t aligned_start = align_up_uintptr(s, KMALLOC_DEFAULT_ALIGN);
-    const uintptr_t aligned_end   = l & ~(KMALLOC_DEFAULT_ALIGN - 1);
+    const uintptr_t aligned_start = align_up_uintptr(s, KMALLOC_ALIGN);
+    const uintptr_t aligned_end   = l & ~(KMALLOC_ALIGN - 1);
 
     if (aligned_end <= aligned_start)
     {
@@ -35,7 +35,7 @@ void kmalloc_init(void *start, void *limit)
     heap_cur = aligned_start;
     heap_end = aligned_end;
 
-    printf("kmalloc init\n");
+    puts("kmalloc init\n");
 }
 
 void *kmalloc(size_t size)
@@ -46,7 +46,7 @@ void *kmalloc(size_t size)
     }
 
     // Round size up to alignment
-    size = (size + (KMALLOC_DEFAULT_ALIGN - 1)) & ~(size_t)(KMALLOC_DEFAULT_ALIGN - 1);
+    size = (size + (KMALLOC_ALIGN - 1)) & ~(size_t)(KMALLOC_ALIGN - 1);
 
     if (size > (size_t)(heap_end - heap_cur))
     {
