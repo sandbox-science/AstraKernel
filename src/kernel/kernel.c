@@ -67,9 +67,23 @@ void not_main(void)
 {
     puts("Memory allocation firing test!\r\n");
 
-    void *p = kmalloc(48);
-    printf("kmalloc(48) -> 0x%x\r\n", (unsigned)(uintptr_t)p);
+    void *p  = kmalloc(10);
+    void *p2 = kmalloc(48);
+    printf("kmalloc(10) addr: %p\n", p);
+    printf("kmalloc(48) addr: %p\n", p2);
 
+    char *buf = kmalloc(1);
+    if (buf)
+    {
+        printf("buf addr: %p\n", buf);
+        buf[0] = 'a';
+        buf[1] = 'b';
+        buf[2] = 'c';
+    }
+
+    printf("content -> %c%c%c\n addr -> %p\n%p\n%p\n", buf[0], buf[1], buf[2], &buf[0], &buf[1], &buf[2]);
+    printf("buf[0] add: %p\n", &buf[0]);
+    
     unsigned heap_size_kb = (unsigned)(uintptr_t)&__heap_size__ / 1024;
     printf("heap: start=0x%x end=0x%x size=%u KiB\r\n",
            (unsigned)(uintptr_t)&__heap_start__,
@@ -139,6 +153,12 @@ void kernel_main(void)
             case 'h': // Check for help command
                 printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
                 break;
+
+            case 'b':
+                /* @todo Remove this section when testings are over. */
+                printf("UART base: 0x%p\n", (void *)0x101F1000);
+                printf("CPU Mode: %s\n", "Supervisor");
+                printf("Test signed: %d, unsigned: %u, hex: 0x%X\n", -42, 42, 42);
 
             case 'e':
                 /* @todo Remove this section when testings are over. */
