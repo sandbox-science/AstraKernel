@@ -65,4 +65,7 @@ docs:
 	mkdir -p docs
 	doxygen Doxyfile
 
+doc:
+	open "docs/html/index.html"
+
 .PHONY: all clean qemu docker docs
