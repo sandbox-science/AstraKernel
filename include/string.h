@@ -1,5 +1,4 @@
-#ifndef STRING_H
-#define STRING_H
+#pragma once
 
 #include <stddef.h>
 
@@ -15,4 +14,3 @@ extern "C"
 }
 #endif
 
-#endif // STRING_H

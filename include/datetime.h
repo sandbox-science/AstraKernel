@@ -1,5 +1,4 @@
-#ifndef DATETIME_H
-#define DATETIME_H
+#pragma once
 
 #include <stdint.h>
 
@@ -30,4 +29,3 @@ extern "C"
 }
 #endif
 
-#endif // DATETIME_H
