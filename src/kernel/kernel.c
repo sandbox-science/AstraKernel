@@ -156,9 +156,24 @@ void kernel_main(void)
 
             case 'b':
                 /* @todo Remove this section when testings are over. */
+                #include <limits.h>
                 printf("UART base: 0x%p\n", (void *)0x101F1000);
                 printf("CPU Mode: %s\n", "Supervisor");
-                printf("Test signed: %d, unsigned: %u, hex: 0x%X\n", -42, 42, 42);
+                printf("Test signed: %d, unsigned: %u, hex: 0x%X\n", -42, 42U, 42U);
+                printf("Zero: %d\n", 0);
+                printf("Neg: %d\n", -1);
+                printf("Max int: %d\n", INT_MAX);
+                printf("Min int: %d\n", INT_MIN);   // verify no overflow crash
+                printf("Unsigned max: %u\n", UINT_MAX);
+                printf("Hex lower: %x\n", 0xdeadbeef);
+                printf("Hex upper: %X\n", 0xdeadbeef);
+                printf("Percent: %%\n");
+                uint8_t number_address[1] = {0};
+                uint8_t *ptr = &number_address[0];
+                printf("Pointer address: %p\n", ptr);
+                printf("Long decimal: %ld\n", 2147483647L);
+                printf("Long hex: %lX\n", 0xFFFFFFFFL);
+                break;
 
             case 'e':
                 /* @todo Remove this section when testings are over. */
