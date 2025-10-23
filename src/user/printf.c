@@ -1,14 +1,22 @@
+/**
+ * @file printf.c
+ * @brief UART-backed minimal printf implementation for a freestanding kernel.
+ *
+ * This file implements formatted output and simple line input using
+ * the QEMU VersatileAB UART0. It is designed for early boot and debugging.
+ */
+
 #include "printf.h"
+#include "panic.h"
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stddef.h>
 
-// TODO: Check working of printf, all cases
-
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
-// TODO: See to move this mathematical operation to math.c/.h
+/** @todo: See to move this mathematical operation to math.c/.h */
 // Maybe have a file with the macros?
 // Memory-mapped I/O registers for UART0 on QEMU versatileAB
 #define     UART0_BASE  0x101F1000
@@ -18,7 +26,11 @@ _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 static const uint32_t UART_FR_TXFF = (1U << 5); // Transmit FIFO Full
 static const uint32_t UART_FR_RXFE = (1U << 4); // Receive FIFO Empty
 
-// Send a single character over UART, waiting if the FIFO is full
+/**
+ * @brief Send a single character over UART, waiting if the FIFO is full
+ *
+ * @param c Character to transmit
+*/
 static inline void putc(char c)
 {
     // Wait until UART transmit FIFO is not full
@@ -27,125 +39,151 @@ static inline void putc(char c)
 }
 
 // TODO: potentially move those functions to math.c/.h
-unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
+// unsigned long long _bdiv(unsigned long long dividend, unsigned long long divisor, unsigned long long *remainder)
+// {
+//     // INFO: Currently, this algorithm involves dividing only by 10 and 16. So, division by zero should not be a problem, yet.
+//     // TO-DO: Design a faster division algorithm and ensure that division by zero is not allowed.
+//     if (divisor == 0)
+//     {
+//         kernel_panic("_bdiv: Division by zero");
+//     }
+//     *remainder = 0;
+//     unsigned long long quotient = 0;
+
+//     for (int i = 63; i >= 0; i--)
+//     {
+//         quotient <<= 1;
+//         *remainder <<= 1;
+//         unsigned long long temp = (unsigned long long)1 << i; // Without this cast, the type is misinterpreted leading to UB
+//         *remainder |= (dividend & temp) >> i;
+
+//         if (*remainder >= divisor)
+//         {
+//             *remainder -= divisor;
+//             quotient |= 1;
+//         }
+//     }
+
+//     return quotient;
+// }
+
+/**
+ * @brief Perform division and return quotient and remainder.
+ *
+ * @note Kernel panic if division by zero
+ * 
+ * @param n Dividend.
+ * @param d Divisor.
+ * @param r Output parameter for remainder.
+ * @return Quotient of n / d.
+ */
+static unsigned long long _divmod(unsigned long long n, unsigned long long d, unsigned long long *r)
 {
-    // INFO: Currently, this algorithm involves dividing only by 10 and 16. So, division by zero should not be a problem, yet.
-    // TO-DO: Design a faster division algorithm and ensure that division by zero is not allowed.
-    *remainder = 0;
-    unsigned long long quotient = 0;
-
-    for (int i = 63; i >= 0; i--)
+    if (d == 0)
     {
-        quotient <<= 1;
-        *remainder <<= 1;
-        unsigned long long temp = (unsigned long long)1 << i; // Without this cast, the type is misinterpreted leading to UB
-        *remainder |= (dividend & temp) >> i;
-
-        if (*remainder >= divisor)
-        {
-            *remainder -= divisor;
-            quotient |= 1;
-        }
+        kernel_panic("_divmod: Division by zero");
     }
 
-    return quotient;
+    *r = n % d;
+    return n / d;
 }
 
-void _putunsignedlong(unsigned long long unum, unsigned long long base, bool hex_capital)
+/**
+ * @brief Print an unsigned integer in the given base.
+ *
+ * @param num Unsigned integer to print.
+ * @param base Number base (10 for decimal, 16 for hex).
+ * @param uppercase Use uppercase hex digits if true.
+ */
+static void put_unsigned(unsigned long long num, unsigned base, bool uppercase)
 {
-    char out_buf[32];
-    uint32_t len = 0;
+    static const char digits_l[] = "0123456789abcdef";
+    static const char digits_u[] = "0123456789ABCDEF";
+    const char *digits = uppercase ? digits_u : digits_l;
 
-    char base16_factor = (7 * (hex_capital) + 39 * (!hex_capital)) * (base == 16); // If base 16, add 7 or 39 depending on
-                                                                                   // X or x respectively
-
-    unsigned long long mod;
-    unsigned long long res;
+    char buf[32];
+    size_t len = 0;
 
     do
     {
-        res = _bdiv(unum, base, &mod);
-        out_buf[len] = '0' + mod + base16_factor * (mod > 9);
+        unsigned long long rem;
+        num         = _divmod(num, base, &rem);
+        buf[len++]  = digits[rem];
+    } while (num);
 
-        len++;
-        unum = res;
-    } while (unum);
-
-    for (uint32_t i = len; i > 0; i--)
+    while (len--)
     {
-        putc(out_buf[i - 1]);
+        putc(buf[len]);
     }
 }
 
-void _putunsignedint(uint32_t unum)
+/**
+ * @brief Print a signed integer in decimal form.
+ *
+ * @param num Signed integer to print.
+ */
+static inline void put_signed(long long num)
 {
-    _putunsignedlong(unum, 10, false);
+    if (num < 0)
+    {
+        putc('-');
+        num = -num;
+    }
+    put_unsigned((unsigned long long)num, 10, false);
 }
 
-void _puthexsmall(unsigned long long unum)
+/**
+ * @brief Format and print an integer based on format control.
+ *
+ * @param control Format specifier character ('d', 'u', 'x', or 'X').
+ * @param fs Pointer to the current format state.
+ */
+static inline void put_integers(char control, const Format_State *restrict fs)
 {
-    _putunsignedlong(unum, 16, false);
-}
-
-void _puthexcapital(unsigned long long unum)
-{
-    _putunsignedlong(unum, 16, true);
-}
-
-void _putintegers(char control, Format_State *format_state)
-{
-    format_state->in_format = false; // Valid as only %l updates this
+    bool is_long                = fs->flags & FMT_LONG;
+    bool uppercase              = fs->flags & FLAG_UPPERCASE;
+    unsigned long long value    = fs->num;
 
     switch (control)
     {
-    case 'u':
-    {
-        _putunsignedlong(format_state->num, 10, false);
-        break;
-    }
+        case 'u': // unsigned decimal
+            put_unsigned(value, 10, false);
+            break;
 
-    case 'd':
-    {
-        uint32_t shamt = format_state->long_format * 63 + !(format_state->long_format) * 31;
+        case 'd':
+            if(is_long)
+            {
+                put_signed((long long)value);
+            }
+            else
+            {
+                put_signed((long)(uint32_t)value);
+            }
+            break;
 
-        uint32_t sign_bit = (format_state->num) >> shamt;
+        case 'x': // lowercase hex
+        case 'X': // uppercase hex
+            if (uppercase)
+            {
+                put_unsigned(value, 16, true);
+            }
+            else
+            {
+                put_unsigned(value, 16, false);
+            }
+            break;
 
-        if (sign_bit)
-        {
-            putc('-');
-
-            format_state->num = ((format_state->num ^ 0xffffffff) * !format_state->long_format +         // 2's complement for 32 bit
-                                 (format_state->num ^ 0xffffffffffffffff) * format_state->long_format) + // 2's complement for 64 bit
-                                1;
-        }
-
-        _putunsignedlong(format_state->num, 10, false);
-
-        break;
-    }
-    case 'x':
-    {
-        _puthexsmall(format_state->num);
-        break;
-    }
-    case 'X':
-    {
-        _puthexcapital(format_state->num);
-        break;
-    }
+        default:
+            // Optional: add kernel diagnostic for unknown format
+            break;
     }
 }
 
-// Validation for integer formats
-bool _validate_format_specifier(char c)
-{
-    return (c == 'd') ||
-           (c == 'u') ||
-           (c == 'x') ||
-           (c == 'X');
-}
-
-// Send a null-terminated string over UART
+/**
+ * @brief Transmit a null-terminated string.
+ *
+ * @param s String to transmit. Must be non-null.
+ */
 void puts(const char *s)
 {
     while (*s)
@@ -154,94 +192,142 @@ void puts(const char *s)
     }
 }
 
-// Send a formatted string over UART
-void printf(const char *s, ...)
+/**
+ * @brief Kernel printf implementation using UART output.
+ *
+ * @param fmt Format string.
+ * @param ... Variable arguments for the format string.
+ *
+ * Implements a minimal printf supporting:
+ * - %c, %s, %p, %d, %u, %x, %X, %l modifiers
+ * - %%
+ */
+void printf(const char *fmt, ...)
 {
-    va_list elem_list;
+    va_list args;
+    va_start(args, fmt);
 
-    va_start(elem_list, s);
+    fmt_state_t state   = FMT_TEXT;
+    Format_State fs     = {0};
 
-    Format_State format_state = {.num = 0, .valid_format = false, .in_format = false, .long_format = false};
-
-    while (*s)
+    while (*fmt)
     {
-        if (*s == '%' || format_state.in_format)
+        char c = *fmt++;
+
+        switch (state)
         {
-            switch (*(s + 1))
-            {
-            case 'c':
-            {
-                uint32_t character = va_arg(elem_list, uint32_t); // Characters are converted into 'int' when passed as var-args
-                putc((char)character);
-                break;
-            }
-            case 's':
-            {
-                char *it = va_arg(elem_list, char *);
-
-                if (it == NULL)
+            case FMT_TEXT:
+                if (c == '%')
                 {
-                    printf("(null)");
-                    break;
+                    state = FMT_PERCENT;
                 }
-
-                while (*it)
-                {
-                    putc(*it++);
-                }
-                break;
-            }
-            case 'l':
-            {
-                format_state.in_format   = true;
-                format_state.long_format = true;
-                s += 1; // Evaluate the immediate next char
-                continue;
-            }
-            case '%':
-            {
-                putc('%');
-                break;
-            }
-            default:
-            {
-                format_state.valid_format = _validate_format_specifier(*(s + 1));
-
-                if (format_state.valid_format)
-                {
-                    if (format_state.long_format)
-                    {
-                        format_state.num = (unsigned long long)va_arg(elem_list, unsigned long long);
-                    }
-                    else
-                    {
-                        format_state.num = (uint32_t)va_arg(elem_list, uint32_t);
-                    }
-
-                    _putintegers(*(s + 1), &format_state);
-
-                    format_state.long_format = false;
-                }
+                
                 else
                 {
-                    // TODO: Implement invalid format error handling here
+                    putc(c);
                 }
-
                 break;
-            }
-            } // end switch case
-            s += 2; // Skip format specifier
-        }
-        else
-        {
-            putc(*s++);
+
+            case FMT_PERCENT:
+                switch (c)
+                {
+                    case '%':
+                        putc('%');
+                        state = FMT_TEXT;
+                        break;
+
+                    case 'l':
+                        fs.flags |= FLAG_LONG;
+                        state     = FMT_LONG;
+                        break;
+
+                    case 'c':
+                        putc((char)va_arg(args, int));
+                        state = FMT_TEXT;
+                        break;
+
+                    case 's':
+                    {
+                        const char *s = va_arg(args, const char *);
+                        puts(s ? s : "(null)");
+                        state = FMT_TEXT;
+                        break;
+                    }
+
+                    case 'p':
+                    {
+                        uintptr_t addr = (uintptr_t)va_arg(args, void *);
+                        puts("0x");
+                        put_unsigned(addr, 16, false);
+                        state = FMT_TEXT;
+                        break;
+                    }
+
+                    case 'd':
+                    case 'u':
+                    case 'x':
+                    case 'X':
+                    {
+                        if (c == 'X')
+                        {
+                            fs.flags |= FLAG_UPPERCASE;
+                        }
+                        fs.num = fs.flags & FLAG_LONG
+                                 ? va_arg(args, unsigned long long)
+                                 : va_arg(args, unsigned int);
+
+                        put_integers(c, &fs);
+                        fs.flags = 0; // reset for next
+                        state    = FMT_TEXT;
+                        break;
+                    }
+
+                    default:
+                        // unrecognized specifier
+                        putc('%');
+                        putc(c);
+                        state = FMT_TEXT;
+                        break;
+                }
+                break;
+
+            case FMT_LONG:
+                // only handles "%ld" or "%lu" etc.
+                switch (c)
+                {
+                    case 'd':
+                    case 'u':
+                    case 'x':
+                    case 'X':
+                        if (c == 'X')
+                        {
+                            fs.flags |= FLAG_UPPERCASE;
+                        }
+                        fs.num = va_arg(args, unsigned long long);
+                        put_integers(c, &fs);
+                        fs.flags = 0;
+                        state    = FMT_TEXT;
+                        break;
+                    default:
+                        // fallback if 'l' wasn't followed by known type
+                        putc('%');
+                        putc('l');
+                        putc(c);
+                        state = FMT_TEXT;
+                        break;
+                }
+                break;
         }
     }
 
-    va_end(elem_list);
+    va_end(args);
 }
 
-// Function to get user input from UART
+/**
+ * @brief Blocking UART character input.
+ *
+ * @return The next character read from UART.
+ */
 static inline char getc(void)
 {
     // Wait until UART receive FIFO is not empty
@@ -249,7 +335,14 @@ static inline char getc(void)
     return (char)(UART0_DR & 0xFF);
 }
 
-// Function to getline from user input
+/**
+ * @brief Read a line of text from UART with basic editing support.
+ *
+ * @param buffer Destination buffer for the input line.
+ * @param length Maximum number of bytes to store (including '\0').
+ *
+ * Handles backspace and carriage return.
+ */
 void getlines(char *restrict buffer, size_t length)
 {
     long long index = 0;
