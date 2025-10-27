@@ -1,6 +1,4 @@
-#ifndef CLEAR_H
-#define CLEAR_H
+#pragma once
 
 void clear(void);
 
-#endif // CLEAR_H

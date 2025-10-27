@@ -4,12 +4,13 @@
 
 _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
-#define RTCDR (*(volatile uint32_t *)0x101e8000) // RTC Register
+// TODO: Potentially move those macros to utils file or something
+#define     RTCDR (*(volatile uint32_t *)0x101e8000) // RTC Register
 
-#define SECONDS_IN_YEAR 31556926
-#define SECONDS_IN_MONTH 2629743
-#define SECONDS_IN_DAY 86400
-#define LEAP_YEARS_BEFORE_1970 477
+#define     SECONDS_IN_YEAR         31556926
+#define     SECONDS_IN_MONTH        2629743
+#define     SECONDS_IN_DAY          86400
+#define     LEAP_YEARS_BEFORE_1970  477
 
 uint32_t getdate(dateval *date_struct)
 {

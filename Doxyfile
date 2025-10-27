@@ -10,7 +10,7 @@ OUTPUT_DIRECTORY       = docs
 # Input
 #----------------------------------------------------------
 # Scan both source and header files + markdown pages
-INPUT                  = kernel user include docs/pages README.md
+INPUT                  = src include docs/pages README.md
 FILE_PATTERNS          = *.c *.h *.md *.s *.ld
 RECURSIVE              = YES
 EXCLUDE_PATTERNS       = */tests/* */build/* */literature/*

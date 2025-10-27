@@ -1,5 +1,4 @@
-#ifndef INTERRUPT_H
-#define INTERRUPT_H
+#pragma once
 
 #include <stdint.h>
 
@@ -62,5 +61,3 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-
-#endif // INTERRUPT_H

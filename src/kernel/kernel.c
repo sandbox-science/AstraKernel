@@ -6,8 +6,13 @@
 #include "clear.h"
 #include "string.h"
 #include "interrupt.h"
+#include "memory.h"
 
- extern volatile uint64_t systicks; // this is declared in interrupt.c
+extern volatile uint64_t systicks; // this is declared in interrupt.c
+
+extern char __heap_start__;
+extern char __heap_end__;
+extern char __heap_size__;
 
 static const char *banner[] = {
     "========================================\r\n",
@@ -20,7 +25,8 @@ static const char *banner[] = {
     "\r\n",
     "Welcome to your own little Astra world!\r\n",
     "Type away, explore, have fun.\r\n",
-    "\r\n"};
+    "\r\n"
+};
 
 // Initializes and prints the welcome banner.
 static void init_message(void)
@@ -59,6 +65,31 @@ void irq_sanity_check(void)
 // It test that the timer interrupt is firing as expected.
 void not_main(void)
 {
+    puts("Memory allocation firing test!\r\n");
+
+    void *p  = kmalloc(10);
+    void *p2 = kmalloc(48);
+    printf("kmalloc(10) addr: %p\n", p);
+    printf("kmalloc(48) addr: %p\n", p2);
+
+    char *buf = kmalloc(1);
+    if (buf)
+    {
+        printf("buf addr: %p\n", buf);
+        buf[0] = 'a';
+        buf[1] = 'b';
+        buf[2] = 'c';
+    }
+
+    printf("content -> %c%c%c\n addr -> %p\n%p\n%p\n", buf[0], buf[1], buf[2], &buf[0], &buf[1], &buf[2]);
+    printf("buf[0] add: %p\n", &buf[0]);
+    
+    unsigned heap_size_kb = (unsigned)(uintptr_t)&__heap_size__ / 1024;
+    printf("heap: start=0x%x end=0x%x size=%u KiB\r\n",
+           (unsigned)(uintptr_t)&__heap_start__,
+           (unsigned)(uintptr_t)&__heap_end__,
+           heap_size_kb);
+
     puts("Time0 IRQ firing test!\r\n");
 
     // Configure Timer0 for 100 Hz assuming 1 MHz timer clock in QEMU
@@ -80,21 +111,23 @@ void not_main(void)
 }
 
 /* The following macros are for testing purposes. */
-#define TIMER_TICK_TEST     not_main()
-#define SANITY_CHECK        irq_sanity_check()
-#define CALL_SVC_0          __asm__ volatile ("svc #0")
+#define     TIMER_TICK_TEST     not_main()
+#define     SANITY_CHECK        irq_sanity_check()
+#define     CALL_SVC_0          __asm__ volatile ("svc #0")
 
 // Entry point for the kernel
 void kernel_main(void)
 {
     clear();
+    kmalloc_init(&__heap_start__, &__heap_end__);
+    kmalloc_remaining();
 
-/* TESTS */
-#ifdef USE_KTESTS 
-    SANITY_CHECK;
-    CALL_SVC_0;
-    TIMER_TICK_TEST;
-#endif
+    /* TESTS */
+    #ifdef USE_KTESTS 
+        SANITY_CHECK;
+        CALL_SVC_0;
+        TIMER_TICK_TEST;
+    #endif
 
     /* Back to normal operations */
     init_message();
@@ -113,12 +146,37 @@ void kernel_main(void)
 
         printf("\r\n");
 
+        if (input_buffer[0] == '\0') continue;
+
         switch (input_buffer[0])
         {
             case 'h': // Check for help command
                 printf("\nHelp:\n 'q' to exit\n 'h' for help\n 'c' to clear screen\n 't' to print current time\n 'd' to print current date\r\n");
                 break;
+
+            case 'b':
+                /* @todo Remove this section when testings are over. */
+                #include <limits.h>
+                printf("UART base: 0x%p\n", (void *)0x101F1000);
+                printf("CPU Mode: %s\n", "Supervisor");
+                printf("Test signed: %d, unsigned: %u, hex: 0x%X\n", -42, 42U, 42U);
+                printf("Zero: %d\n", 0);
+                printf("Neg: %d\n", -1);
+                printf("Max int: %d\n", INT_MAX);
+                printf("Min int: %d\n", INT_MIN);   // verify no overflow crash
+                printf("Unsigned max: %u\n", UINT_MAX);
+                printf("Hex lower: %x\n", 0xdeadbeef);
+                printf("Hex upper: %X\n", 0xdeadbeef);
+                printf("Percent: %%\n");
+                uint8_t number_address[1] = {0};
+                uint8_t *ptr = &number_address[0];
+                printf("Pointer address: %p\n", ptr);
+                printf("Long decimal: %ld\n", 2147483647L);
+                printf("Long hex: %lX\n", 0xFFFFFFFFL);
+                break;
+
             case 'e':
+                /* @todo Remove this section when testings are over. */
                 int result = strcmp("abc", "abc"); // Expect 0
                 printf("Expect 0 -> %d\r\n", result);
 
@@ -140,10 +198,12 @@ void kernel_main(void)
                 result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
                 printf("Expect 1 -> %d\r\n", result);
                 break;
+
             case 'q': // Check for exit command
                 printf("Exiting...\r\n");
                 is_running = false;
                 break;
+
             case 'c': // Check for clear screen command
                 clear();
                 break;
@@ -152,10 +212,12 @@ void kernel_main(void)
                 gettime(&time_struct);
                 printf("Current time(GMT): %d:%d:%d\r\n", time_struct.hrs, time_struct.mins, time_struct.secs);
                 break;
+
             case 'd': // Check for date command
                 getdate(&date_struct);
                 printf("Current date(MM-DD-YYYY): %d-%d-%d\r\n", date_struct.month, date_struct.day, date_struct.year);
                 break;
+
             default:
                 printf("Unknown command. Type 'h' for help.\r\n");
                 break;
