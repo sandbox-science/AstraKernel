@@ -1,0 +1,33 @@
+<map id="interrupts_init_timer0" name="interrupts_init_timer0">
+<area shape="rect" id="Node000001" title="VersatilePB SP804 timer clock is typically 1 MHz (can be overridden)" alt="" coords="5,164,148,190"/>
+<area shape="rect" id="Node000002" href="$math_8h.html#a97fbf4adb8a31d415775bdbd5c30c468" title="Unsigned 32&#45;bit integer division: n / d." alt="" coords="240,115,306,140"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="130,161,224,137,225,142,131,166"/>
+<area shape="rect" id="Node000012" href="$interrupt_8h.html#a6b1cda18aba744c0a2580c0833a96d9d" title=" " alt="" coords="202,164,344,190"/>
+<area shape="poly" id="edge17_Node000001_Node000012" title=" " alt="" coords="148,174,186,174,186,179,148,179"/>
+<area shape="rect" id="Node000013" href="$interrupt_8h.html#a18b76150ed04c0d5d19456bf30970fdd" title=" " alt="" coords="196,213,350,239"/>
+<area shape="poly" id="edge18_Node000001_Node000013" title=" " alt="" coords="131,188,205,206,203,212,130,193"/>
+<area shape="rect" id="Node000003" href="$panic_8c.html#ac3d3e7674c5f1ad62a44afce2ff9a0ca" title="Print a panic message and halt the CPU." alt="" coords="398,115,492,140"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="306,125,382,125,382,130,306,130"/>
+<area shape="rect" id="Node000004" href="$panic_8c.html#a830ea0b31f5cecec34c74c8a4c2f8192" title="Halt the CPU indefinitely." alt="" coords="540,65,625,91"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="482,112,529,94,531,99,484,117"/>
+<area shape="rect" id="Node000005" href="$printf_8c.html#a0aff7311d684a0e0ef33125616a73385" title="Kernel printf implementation using UART output." alt="" coords="557,115,608,140"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="493,125,542,125,542,130,493,130"/>
+<area shape="rect" id="Node000006" href="$printf_8c.html#ac3154a3597888cf112e4e7bf6a5f1846" title="Format and print an integer based on format control." alt="" coords="673,115,765,140"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="608,125,657,125,657,130,608,130"/>
+<area shape="rect" id="Node000008" href="$printf_8c.html#ab97c3c9e783c1402d4007ceafdb197c1" title="Print an unsigned integer in the given base." alt="" coords="945,128,1044,154"/>
+<area shape="poly" id="edge13_Node000005_Node000008" title=" " alt="" coords="609,134,673,150,741,156,810,156,930,147,930,152,810,161,741,161,672,155,608,139"/>
+<area shape="rect" id="Node000010" href="$printf_8c.html#a9bdf0418571456c566aa2f329b5f8350" title="Send a single character over UART, waiting if the FIFO is full." alt="" coords="1104,52,1150,78"/>
+<area shape="poly" id="edge14_Node000005_Node000010" title=" " alt="" coords="607,112,623,101,646,81,671,63,739,29,813,12,878,4,929,5,980,15,1044,32,1090,47,1088,52,1043,37,979,21,929,11,878,9,813,17,741,34,674,67,650,85,626,106,609,116"/>
+<area shape="rect" id="Node000011" href="$printf_8c.html#a299d0f9cb9e7b14e1278a4ed21e4d76f" title="Transmit a null&#45;terminated string." alt="" coords="832,27,878,52"/>
+<area shape="poly" id="edge15_Node000005_Node000011" title=" " alt="" coords="607,117,816,49,818,54,609,122"/>
+<area shape="rect" id="Node000007" href="$printf_8c.html#a2e8c688dfa078a9a7f1f02d4126f466a" title="Print a signed integer in decimal form." alt="" coords="813,76,897,102"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="765,112,797,102,799,107,766,117"/>
+<area shape="poly" id="edge12_Node000006_Node000008" title=" " alt="" coords="765,127,930,135,930,140,765,132"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="893,100,945,120,943,125,891,105"/>
+<area shape="poly" id="edge11_Node000007_Node000010" title=" " alt="" coords="898,82,1088,65,1089,71,898,88"/>
+<area shape="rect" id="Node000009" href="$printf_8c.html#a96a30e819fcbfa9a0251f71f14ff79bc" title="Perform division and return quotient and remainder." alt="" coords="1092,177,1162,203"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="1032,152,1078,169,1076,174,1030,157"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="1017,125,1089,83,1092,88,1020,130"/>
+<area shape="poly" id="edge9_Node000009_Node000003" title=" " alt="" coords="1092,203,987,229,922,239,854,241,1026,211,1066,205,718,243,682,241,646,234,579,210,520,180,475,152,478,147,523,175,581,205,648,229,683,236,717,238,1071,204,1027,216,859,241,922,234,986,224,1090,198"/>
+<area shape="poly" id="edge16_Node000011_Node000010" title=" " alt="" coords="879,39,1088,59,1088,64,879,44"/>
+</map>

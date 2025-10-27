@@ -1,0 +1,30 @@
+<map id="kmalloc_init" name="kmalloc_init">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,146,96,172"/>
+<area shape="rect" id="Node000002" href="$memory_8c.html#a4742e575dd722d9e1d926ab578f02c9f" title=" " alt="" coords="144,96,256,122"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,143,143,125,145,130,93,148"/>
+<area shape="rect" id="Node000003" href="$panic_8c.html#ac3d3e7674c5f1ad62a44afce2ff9a0ca" title="Print a panic message and halt the CPU." alt="" coords="153,146,247,172"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="96,156,137,156,137,161,96,161"/>
+<area shape="rect" id="Node000011" href="$printf_8c.html#a299d0f9cb9e7b14e1278a4ed21e4d76f" title="Transmit a null&#45;terminated string." alt="" coords="459,246,506,272"/>
+<area shape="poly" id="edge17_Node000001_Node000011" title=" " alt="" coords="97,169,144,181,445,249,444,254,143,187,95,174"/>
+<area shape="rect" id="Node000004" href="$panic_8c.html#a830ea0b31f5cecec34c74c8a4c2f8192" title="Halt the CPU indefinitely." alt="" coords="304,120,388,146"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="247,148,288,141,289,146,248,153"/>
+<area shape="rect" id="Node000005" href="$printf_8c.html#a0aff7311d684a0e0ef33125616a73385" title="Kernel printf implementation using UART output." alt="" coords="321,170,371,196"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="248,164,306,173,305,179,247,169"/>
+<area shape="rect" id="Node000006" href="$printf_8c.html#ac3154a3597888cf112e4e7bf6a5f1846" title="Format and print an integer based on format control." alt="" coords="436,144,529,170"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="371,176,421,166,422,171,372,181"/>
+<area shape="rect" id="Node000008" href="$printf_8c.html#ab97c3c9e783c1402d4007ceafdb197c1" title="Print an unsigned integer in the given base." alt="" coords="709,94,807,120"/>
+<area shape="poly" id="edge13_Node000005_Node000008" title=" " alt="" coords="369,167,435,130,502,111,572,102,637,98,693,99,693,105,637,104,572,107,504,117,437,134,372,172"/>
+<area shape="rect" id="Node000010" href="$printf_8c.html#a9bdf0418571456c566aa2f329b5f8350" title="Send a single character over UART, waiting if the FIFO is full." alt="" coords="867,170,914,196"/>
+<area shape="poly" id="edge14_Node000005_Node000010" title=" " alt="" coords="372,180,852,180,852,185,372,185"/>
+<area shape="poly" id="edge15_Node000005_Node000011" title=" " alt="" coords="372,194,447,236,445,241,369,198"/>
+<area shape="rect" id="Node000007" href="$printf_8c.html#a2e8c688dfa078a9a7f1f02d4126f466a" title="Print a signed integer in decimal form." alt="" coords="577,144,661,170"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="529,155,561,155,561,160,529,160"/>
+<area shape="poly" id="edge12_Node000006_Node000008" title=" " alt="" coords="528,141,576,129,693,111,694,116,577,135,529,147"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="656,141,706,123,708,128,657,146"/>
+<area shape="poly" id="edge11_Node000007_Node000010" title=" " alt="" coords="662,159,852,177,852,182,661,164"/>
+<area shape="rect" id="Node000009" href="$printf_8c.html#a96a30e819fcbfa9a0251f71f14ff79bc" title="Perform division and return quotient and remainder." alt="" coords="855,43,926,69"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="793,91,840,72,842,77,795,96"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="783,118,856,160,853,164,781,122"/>
+<area shape="poly" id="edge9_Node000009_Node000003" title=" " alt="" coords="854,48,750,22,685,12,623,6,792,147,830,183,837,193,833,199,800,187,732,151,481,8,443,11,413,21,388,35,366,53,320,95,292,116,257,137,248,141,246,137,255,132,289,112,317,91,362,48,385,30,411,16,442,6,482,3,735,146,802,182,831,194,831,193,826,186,788,151,618,4,686,7,751,17,855,43"/>
+<area shape="poly" id="edge16_Node000011_Node000010" title=" " alt="" coords="506,257,560,257,635,253,721,243,806,224,856,201,858,206,808,229,722,249,636,259,560,262,506,262"/>
+</map>

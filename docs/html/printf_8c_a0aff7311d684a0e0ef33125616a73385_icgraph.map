@@ -1,0 +1,42 @@
+<map id="printf" name="printf">
+<area shape="rect" id="Node000001" title="Kernel printf implementation using UART output." alt="" coords="753,181,803,207"/>
+<area shape="rect" id="Node000002" href="$clear_8c.html#ae683fe63c33c388e9ba1c6392dd477eb" title="Clears the terminal screen and moves the cursor to the home position." alt="" coords="631,5,680,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="767,167,744,107,726,74,703,45,680,29,683,25,707,42,730,72,749,105,772,165"/>
+<area shape="rect" id="Node000003" href="$kernel_8c.html#a6b8fb674fb359f6ae53dc9c4fb7fc6be" title=" " alt="" coords="304,105,395,131"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="737,190,395,129,396,124,738,185"/>
+<area shape="rect" id="Node000004" href="$printf_8c.html#a7880ed31ba841d890680635d6b83fcb7" title="Read a line of text from UART with basic editing support." alt="" coords="623,56,689,82"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="761,169,736,132,703,95,688,84,691,80,707,91,741,128,765,166"/>
+<area shape="rect" id="Node000005" href="$kernel_8c.html#a5f7f5591859a697cdeb5faafdf0ce822" title=" " alt="" coords="607,105,705,131"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="742,175,677,134,680,129,745,171"/>
+<area shape="rect" id="Node000006" href="$panic_8c.html#ac3d3e7674c5f1ad62a44afce2ff9a0ca" title="Print a panic message and halt the CPU." alt="" coords="609,333,703,359"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="759,221,670,335,665,331,755,218"/>
+<area shape="rect" id="Node000014" href="$kernel_8c.html#a8a11654fcf5bd5fcf10f118ad5f79904" title=" " alt="" coords="151,308,225,334"/>
+<area shape="poly" id="edge24_Node000001_Node000014" title=" " alt="" coords="738,202,617,220,469,247,373,271,279,298,226,313,225,308,277,293,372,266,468,242,617,215,737,197"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="617,31,469,75,384,107,382,102,467,70,616,26"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="608,79,396,114,395,108,607,74"/>
+<area shape="poly" id="edge6_Node000005_Node000003" title=" " alt="" coords="591,121,395,121,395,116,591,116"/>
+<area shape="rect" id="Node000007" href="$printf_8c.html#a694b6d27273027eb96424e52b798c391" title=" " alt="" coords="487,408,540,434"/>
+<area shape="poly" id="edge9_Node000006_Node000007" title=" " alt="" coords="617,369,541,410,539,405,615,364"/>
+<area shape="rect" id="Node000008" href="$printf_8c.html#a96a30e819fcbfa9a0251f71f14ff79bc" title="Perform division and return quotient and remainder." alt="" coords="478,457,549,483"/>
+<area shape="poly" id="edge10_Node000006_Node000008" title=" " alt="" coords="637,373,603,410,560,448,544,459,541,454,557,444,599,406,633,369"/>
+<area shape="rect" id="Node000012" href="$math_8h.html#a97fbf4adb8a31d415775bdbd5c30c468" title="Unsigned 32&#45;bit integer division: n / d." alt="" coords="480,359,547,384"/>
+<area shape="poly" id="edge17_Node000006_Node000012" title=" " alt="" coords="594,360,548,368,547,363,593,355"/>
+<area shape="rect" id="Node000015" href="$memory_8c.html#a87d8585002a620e687d68b38ab387a0e" title=" " alt="" coords="316,308,382,334"/>
+<area shape="poly" id="edge20_Node000006_Node000015" title=" " alt="" coords="593,344,382,326,383,321,594,338"/>
+<area shape="rect" id="Node000016" href="$memory_8c.html#ae8d09a66c8495a0c2ff5c54f1309fd6a" title=" " alt="" coords="468,257,559,283"/>
+<area shape="poly" id="edge22_Node000006_Node000016" title=" " alt="" coords="616,328,538,286,541,281,618,323"/>
+<area shape="rect" id="Node000009" href="$printf_8c.html#ab97c3c9e783c1402d4007ceafdb197c1" title="Print an unsigned integer in the given base." alt="" coords="300,483,398,508"/>
+<area shape="poly" id="edge11_Node000008_Node000009" title=" " alt="" coords="463,480,399,491,398,485,463,475"/>
+<area shape="poly" id="edge12_Node000009_Node000001" title=" " alt="" coords="414,504,485,507,522,502,558,493,607,471,641,446,670,414,703,370,729,326,749,280,771,206,776,208,754,281,734,328,707,373,674,418,645,450,610,476,560,498,523,508,485,512,414,509"/>
+<area shape="rect" id="Node000010" href="$printf_8c.html#ac3154a3597888cf112e4e7bf6a5f1846" title="Format and print an integer based on format control." alt="" coords="5,508,98,534"/>
+<area shape="poly" id="edge13_Node000009_Node000010" title=" " alt="" coords="284,494,217,493,146,498,94,510,92,505,145,493,217,488,284,489"/>
+<area shape="rect" id="Node000011" href="$printf_8c.html#a2e8c688dfa078a9a7f1f02d4126f466a" title="Print a signed integer in decimal form." alt="" coords="146,508,230,534"/>
+<area shape="poly" id="edge15_Node000009_Node000011" title=" " alt="" coords="285,508,231,517,230,512,284,503"/>
+<area shape="poly" id="edge14_Node000010_Node000001" title=" " alt="" coords="112,536,146,544,246,563,291,567,345,571,157,518,115,504,106,498,112,494,226,513,515,569,575,565,622,550,662,523,703,478,726,444,743,406,756,367,765,327,773,256,775,207,780,207,779,256,770,328,761,368,748,408,730,446,707,481,665,527,624,555,576,570,515,574,225,518,112,499,112,498,117,499,159,513,350,572,290,573,246,568,145,549,111,541"/>
+<area shape="poly" id="edge16_Node000011_Node000010" title=" " alt="" coords="130,524,98,524,98,518,130,518"/>
+<area shape="rect" id="Node000013" href="$interrupt_8c.html#a2a778647bb8df60e6c3238b29eb2fca2" title="VersatilePB SP804 timer clock is typically 1 MHz (can be overridden)" alt="" coords="278,359,420,384"/>
+<area shape="poly" id="edge18_Node000012_Node000013" title=" " alt="" coords="465,374,421,374,421,369,465,369"/>
+<area shape="poly" id="edge19_Node000013_Node000014" title=" " alt="" coords="291,356,225,335,226,330,293,351"/>
+<area shape="poly" id="edge21_Node000015_Node000014" title=" " alt="" coords="300,324,225,324,225,318,300,318"/>
+<area shape="poly" id="edge23_Node000016_Node000003" title=" " alt="" coords="485,248,363,133,366,129,489,244"/>
+</map>

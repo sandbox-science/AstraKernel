@@ -1,0 +1,31 @@
+<map id="getlines" name="getlines">
+<area shape="rect" id="Node000001" title="Reads a line of text from UART into the given buffer." alt="" coords="5,220,72,246"/>
+<area shape="rect" id="Node000002" href="$printf_8c.html#a0e65feb118c1ee30820c142aeb5a5145" title="Blocking UART character input." alt="" coords="122,146,168,172"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="57,218,111,179,114,183,60,222"/>
+<area shape="rect" id="Node000003" href="$printf_8c.html#a0aff7311d684a0e0ef33125616a73385" title="Kernel printf implementation using UART output." alt="" coords="120,195,170,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="71,223,104,215,105,220,73,228"/>
+<area shape="rect" id="Node000010" href="$printf_8c.html#a9bdf0418571456c566aa2f329b5f8350" title="Send a single character over UART, waiting if the FIFO is full." alt="" coords="649,195,695,221"/>
+<area shape="poly" id="edge17_Node000001_Node000010" title=" " alt="" coords="64,244,101,263,149,284,205,300,263,307,402,307,436,304,469,298,535,278,592,252,637,227,640,231,595,256,536,283,471,304,436,310,402,312,263,312,204,305,148,289,98,268,61,249"/>
+<area shape="rect" id="Node000011" href="$printf_8c.html#a299d0f9cb9e7b14e1278a4ed21e4d76f" title="Transmit a null&#45;terminated string." alt="" coords="241,246,287,272"/>
+<area shape="poly" id="edge18_Node000001_Node000011" title=" " alt="" coords="73,234,226,252,225,257,72,240"/>
+<area shape="rect" id="Node000004" href="$printf_8c.html#ac3154a3597888cf112e4e7bf6a5f1846" title="Format and print an integer based on format control." alt="" coords="218,144,310,170"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="169,195,217,174,219,179,171,200"/>
+<area shape="rect" id="Node000006" href="$printf_8c.html#ab97c3c9e783c1402d4007ceafdb197c1" title="Print an unsigned integer in the given base." alt="" coords="491,94,589,120"/>
+<area shape="poly" id="edge13_Node000003_Node000006" title=" " alt="" coords="157,193,168,182,190,153,200,141,217,130,248,115,282,104,351,93,418,91,476,94,475,100,418,96,352,98,283,110,250,120,219,134,204,145,194,157,172,186,161,197"/>
+<area shape="poly" id="edge14_Node000003_Node000010" title=" " alt="" coords="170,205,633,205,633,211,170,211"/>
+<area shape="poly" id="edge15_Node000003_Node000011" title=" " alt="" coords="171,216,228,241,226,245,169,221"/>
+<area shape="rect" id="Node000005" href="$printf_8c.html#a2e8c688dfa078a9a7f1f02d4126f466a" title="Print a signed integer in decimal form." alt="" coords="358,144,443,170"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="311,155,343,155,343,160,311,160"/>
+<area shape="poly" id="edge12_Node000004_Node000006" title=" " alt="" coords="309,141,358,129,474,111,475,116,359,135,311,147"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="437,141,487,123,489,128,439,146"/>
+<area shape="poly" id="edge11_Node000005_Node000010" title=" " alt="" coords="444,161,590,187,634,197,633,202,588,192,443,166"/>
+<area shape="rect" id="Node000007" href="$printf_8c.html#a96a30e819fcbfa9a0251f71f14ff79bc" title="Perform division and return quotient and remainder." alt="" coords="637,68,707,94"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="589,95,621,88,622,94,590,100"/>
+<area shape="poly" id="edge10_Node000006_Node000010" title=" " alt="" coords="564,118,591,137,646,182,643,187,587,141,560,122"/>
+<area shape="rect" id="Node000008" href="$panic_8c.html#ac3d3e7674c5f1ad62a44afce2ff9a0ca" title="Print a panic message and halt the CPU." alt="" coords="755,18,850,44"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="706,65,752,47,754,52,708,70"/>
+<area shape="poly" id="edge9_Node000008_Node000003" title=" " alt="" coords="754,26,656,14,544,6,788,175,845,218,857,230,855,237,815,222,728,179,399,8,342,14,300,31,263,60,220,100,204,120,195,138,186,159,172,184,167,181,181,156,190,136,200,117,216,97,259,56,298,26,341,8,400,3,730,175,818,218,853,232,852,232,842,222,785,179,539,4,657,9,755,21"/>
+<area shape="rect" id="Node000009" href="$panic_8c.html#a830ea0b31f5cecec34c74c8a4c2f8192" title="Halt the CPU indefinitely." alt="" coords="898,18,982,44"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="850,28,882,28,882,33,850,33"/>
+<area shape="poly" id="edge16_Node000011_Node000010" title=" " alt="" coords="288,255,416,245,589,224,633,215,634,220,589,229,416,250,288,260"/>
+</map>

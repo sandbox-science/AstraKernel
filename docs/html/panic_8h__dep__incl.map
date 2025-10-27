@@ -1,0 +1,13 @@
+<map id="include/panic.h" name="include/panic.h">
+<area shape="rect" id="Node000001" title="Kernel panic and halt routines." alt="" coords="253,5,362,31"/>
+<area shape="rect" id="Node000002" href="$math_8h.html" title=" " alt="" coords="14,79,137,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="255,38,116,81,114,76,253,33"/>
+<area shape="rect" id="Node000004" href="$memory_8c.html" title=" " alt="" coords="161,79,299,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="285,44,245,81,241,77,281,40"/>
+<area shape="rect" id="Node000005" href="$panic_8c.html" title=" " alt="" coords="324,79,448,105"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="334,40,375,77,371,81,330,43"/>
+<area shape="rect" id="Node000006" href="$printf_8c.html" title="UART&#45;backed minimal printf implementation for a freestanding kernel." alt="" coords="473,79,585,105"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="360,34,492,76,490,81,358,39"/>
+<area shape="rect" id="Node000003" href="$interrupt_8c.html" title=" " alt="" coords="5,153,146,178"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="78,120,78,152,73,152,73,120"/>
+</map>

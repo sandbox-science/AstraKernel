@@ -1,0 +1,25 @@
+<map id="_divmod" name="_divmod">
+<area shape="rect" id="Node000001" title="Perform division and return quotient and remainder." alt="" coords="5,233,76,259"/>
+<area shape="rect" id="Node000002" href="$panic_8c.html#ac3d3e7674c5f1ad62a44afce2ff9a0ca" title="Print a panic message and halt the CPU." alt="" coords="124,181,218,207"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="74,230,122,211,124,216,76,235"/>
+<area shape="rect" id="Node000003" href="$panic_8c.html#a830ea0b31f5cecec34c74c8a4c2f8192" title="Halt the CPU indefinitely." alt="" coords="266,181,350,207"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="219,192,250,192,250,197,219,197"/>
+<area shape="rect" id="Node000004" href="$printf_8c.html#a0aff7311d684a0e0ef33125616a73385" title="Kernel printf implementation using UART output." alt="" coords="283,132,333,158"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="208,178,267,156,269,161,210,183"/>
+<area shape="rect" id="Node000005" href="$printf_8c.html#ac3154a3597888cf112e4e7bf6a5f1846" title="Format and print an integer based on format control." alt="" coords="398,132,491,158"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="333,142,383,142,383,148,333,148"/>
+<area shape="rect" id="Node000007" href="$printf_8c.html#ab97c3c9e783c1402d4007ceafdb197c1" title="Print an unsigned integer in the given base." alt="" coords="671,157,769,183"/>
+<area shape="poly" id="edge11_Node000004_Node000007" title=" " alt="" coords="335,151,399,168,467,174,536,176,655,173,656,178,536,182,467,179,398,173,333,156"/>
+<area shape="rect" id="Node000008" href="$printf_8c.html#a9bdf0418571456c566aa2f329b5f8350" title="Send a single character over UART, waiting if the FIFO is full." alt="" coords="817,81,864,107"/>
+<area shape="poly" id="edge12_Node000004_Node000008" title=" " alt="" coords="333,135,398,117,501,95,582,84,664,81,769,85,802,87,802,93,769,90,664,87,583,89,502,100,399,122,335,140"/>
+<area shape="rect" id="Node000009" href="$printf_8c.html#a299d0f9cb9e7b14e1278a4ed21e4d76f" title="Transmit a null&#45;terminated string." alt="" coords="558,5,604,31"/>
+<area shape="poly" id="edge13_Node000004_Node000009" title=" " alt="" coords="316,130,347,89,371,66,397,48,434,32,473,23,542,15,543,21,474,28,435,37,400,53,374,70,351,92,320,133"/>
+<area shape="rect" id="Node000006" href="$printf_8c.html#a2e8c688dfa078a9a7f1f02d4126f466a" title="Print a signed integer in decimal form." alt="" coords="539,107,623,132"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="491,134,523,128,524,133,492,139"/>
+<area shape="poly" id="edge10_Node000005_Node000007" title=" " alt="" coords="491,146,656,162,655,167,491,152"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="619,130,670,149,668,154,618,135"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="623,113,802,95,802,100,624,118"/>
+<area shape="poly" id="edge7_Node000007_Node000001" title=" " alt="" coords="700,186,655,211,594,240,522,264,484,271,446,274,307,274,190,268,91,256,91,251,191,263,307,269,446,269,483,266,520,259,592,235,653,207,697,181"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="741,155,804,113,807,118,743,159"/>
+<area shape="poly" id="edge14_Node000009_Node000008" title=" " alt="" coords="605,17,679,25,725,34,770,48,811,70,809,75,768,53,724,39,678,30,604,22"/>
+</map>
