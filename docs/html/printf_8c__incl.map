@@ -1,0 +1,19 @@
+<map id="src/user/printf.c" name="src/user/printf.c">
+<area shape="rect" id="Node000001" title="UART&#45;backed minimal printf implementation for a freestanding kernel." alt="" coords="157,5,269,31"/>
+<area shape="rect" id="Node000002" href="$printf_8h.html" title="Minimal kernel printf/puts/getlines interface for freestanding systems." alt="" coords="149,79,210,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,32,194,66,189,64,205,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,153,74,178"/>
+<area shape="poly" id="edge9_Node000001_Node000003" title=" " alt="" coords="194,34,125,81,62,143,58,139,122,77,191,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="97,153,166,178"/>
+<area shape="poly" id="edge10_Node000001_Node000004" title=" " alt="" coords="190,34,162,53,139,80,131,109,130,138,125,137,126,108,134,78,158,49,186,29"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="190,153,265,178"/>
+<area shape="poly" id="edge8_Node000001_Node000005" title=" " alt="" coords="218,31,225,79,229,137,224,137,220,79,212,32"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="289,153,353,178"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="224,30,305,139,301,142,220,33"/>
+<area shape="rect" id="Node000007" href="$panic_8h.html" title="Kernel panic and halt routines." alt="" coords="336,79,399,105"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="240,29,329,70,326,75,238,34"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="157,108,78,148,76,143,155,103"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="174,106,150,141,146,138,169,103"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="190,103,213,138,209,141,185,106"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="205,103,284,143,282,148,202,108"/>
+</map>
