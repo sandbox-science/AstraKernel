@@ -1,20 +1,20 @@
 name: Build & Deploy Doxygen Docs
 
-# Run on pushes to the default branch and on PRs targeting it.
+# Run on every push (or PR) to the default branch (usually `main`)
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-# Permissions needed for the deploy‑pages action.
+# Permissions required for the deploy‑pages action
 permissions:
-  contents: read          # checkout
-  pages: write            # publish to GitHub Pages
-  id-token: write         # OIDC token for the deploy action
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-docs:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
 
@@ -24,10 +24,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # required for proper git history when publishing
+          fetch-depth: 0   # needed for proper git history when publishing
 
       # -------------------------------------------------
-      # 2️⃣ Install Doxygen + Graphviz (for UML/diagrams)
+      # 2️⃣ Install Doxygen + Graphviz (for diagrams)
       # -------------------------------------------------
       - name: Install Doxygen and Graphviz
         run: |
@@ -35,22 +35,43 @@ jobs:
           sudo apt-get install -y doxygen graphviz
 
       # -------------------------------------------------
-      # 3️⃣ Generate the documentation
+      # 3️⃣ Build the documentation
       # -------------------------------------------------
       - name: Build Doxygen docs
         run: |
-          make docs
+          # Show the Doxyfile so you can confirm the output dirs
+          echo "===== Doxyfile ====="
+          cat Doxyfile
+          echo "===================="
+          # Run Doxygen – it will write to ./docs/html because of your config
+          doxygen Doxyfile
 
       # -------------------------------------------------
-      # 4️⃣ Upload the generated HTML as an artifact
+      # 4️⃣ Debug: list the generated files (helps catch path issues)
+      # -------------------------------------------------
+      - name: List generated files (debug)
+        run: |
+          echo "=== Repository tree after Doxygen ==="
+          ls -R .
+          echo "=== Looking for docs/html ==="
+          if [ -d "./docs/html" ]; then
+            echo "✅ Found ./docs/html"
+          else
+            echo "❌ ./docs/html NOT found"
+          fi
+
+      # -------------------------------------------------
+      # 5️⃣ Upload the HTML artifact (point to docs/html)
       # -------------------------------------------------
       - name: Upload documentation artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./html
+          path: ./docs/html          # <‑‑ UPDATED PATH
+          name: github-pages
+          retention-days: 1          # keep for a day (adjust as you wish)
 
       # -------------------------------------------------
-      # 5️⃣ Deploy to GitHub Pages
+      # 6️⃣ Deploy to GitHub Pages
       # -------------------------------------------------
       - name: Deploy to GitHub Pages
         id: deployment
