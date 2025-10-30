@@ -1,6 +1,7 @@
 # AstraKernel ~ A minimal ARM kernel for QEMU
 
 [![GitHub release (including pre-releases)](https://img.shields.io/github/v/release/sandbox-science/AstraKernel?include_prereleases)](https://github.com/sandbox-science/AstraKernel/releases)
+[![Doxygen Docs](https://github.com/sandbox-science/AstraKernel/actions/workflows/static.yml/badge.svg?branch=main)](https://github.com/sandbox-science/AstraKernel/actions/workflows/static.yml)
 
 AstraKernel is a minimal experimental kernel written in modern C and ARM assembly, designed to run on
 **QEMU’s Versatile AB/PB board with a Cortex‑A8 CPU override (-cpu cortex-a8)**. This setup keeps the
