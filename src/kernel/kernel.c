@@ -71,6 +71,11 @@ void not_main(void)
     void *p2 = kmalloc(48);
     printf("kmalloc(10) addr: %p\n", p);
     printf("kmalloc(48) addr: %p\n", p2);
+    struct header *h = (struct header *)p - 1;
+    struct header *h2 = (struct header *)p2 - 1;
+    printf("size of kmalloc(10) %d\nsize of kmalloc(48) %d\n", h->size, h2->size);
+    kfree(p);
+    kfree(p2);
 
     char *buf = kmalloc(1);
     if (buf)
@@ -114,20 +119,21 @@ void not_main(void)
 #define     TIMER_TICK_TEST     not_main()
 #define     SANITY_CHECK        irq_sanity_check()
 #define     CALL_SVC_0          __asm__ volatile ("svc #0")
+#define     KMALLOC_TEST        kmalloc_test()
 
 // Entry point for the kernel
 void kernel_main(void)
 {
     clear();
     kmalloc_init(&__heap_start__, &__heap_end__);
-    kmalloc_remaining();
 
     /* TESTS */
-    #ifdef USE_KTESTS 
-        SANITY_CHECK;
-        CALL_SVC_0;
-        TIMER_TICK_TEST;
-    #endif
+#ifdef USE_KTESTS 
+    SANITY_CHECK;
+    CALL_SVC_0;
+    KMALLOC_TEST;
+    TIMER_TICK_TEST;
+#endif
 
     /* Back to normal operations */
     init_message();
