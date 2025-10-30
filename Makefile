@@ -68,4 +68,7 @@ docs:
 doc:
 	open "docs/html/index.html"
 
+debug:
+	make KFLAGS="-DUSE_KTESTS"
+
 .PHONY: all clean qemu docker docs
