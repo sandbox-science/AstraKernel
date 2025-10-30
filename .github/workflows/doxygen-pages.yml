@@ -1,23 +1,34 @@
 name: Build & Deploy Doxygen Docs
 
-# Run on every push (or PR) to the default branch (usually `main`)
+# -------------------------------------------------
+# Trigger on pushes (or PRs) to the default branch
+# -------------------------------------------------
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
-# Permissions required for the deploy‑pages action
+# -------------------------------------------------
+# Permissions needed for the deploy‑pages action
+# -------------------------------------------------
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read          # checkout
+  pages: write            # create a Pages deployment
+  id-token: write         # OIDC token for auth
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
 
+    # -------------------------------------------------
+    # IMPORTANT: Declare the Pages environment here
+    # -------------------------------------------------
+    environment:
+      name: github-pages          # <-- matches the environment GitHub creates for Pages
+      url: ${{ steps.deploy.outputs.page_url }}   # optional, lets you reference the URL later
+
+    steps:
       # -------------------------------------------------
       # 1️⃣ Checkout the repository
       # -------------------------------------------------
@@ -39,25 +50,24 @@ jobs:
       # -------------------------------------------------
       - name: Build Doxygen docs
         run: |
-          # Show the Doxyfile so you can confirm the output dirs
           echo "===== Doxyfile ====="
           cat Doxyfile
           echo "===================="
-          # Run Doxygen – it will write to ./docs/html because of your config
           doxygen Doxyfile
 
       # -------------------------------------------------
-      # 4️⃣ Debug: list the generated files (helps catch path issues)
+      # 4️⃣ Debug: list generated files (helps catch path issues)
       # -------------------------------------------------
       - name: List generated files (debug)
         run: |
           echo "=== Repository tree after Doxygen ==="
           ls -R .
-          echo "=== Looking for docs/html ==="
+          echo "Looking for ./docs/html ..."
           if [ -d "./docs/html" ]; then
             echo "✅ Found ./docs/html"
           else
             echo "❌ ./docs/html NOT found"
+            exit 1
           fi
 
       # -------------------------------------------------
@@ -66,13 +76,13 @@ jobs:
       - name: Upload documentation artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/html          # <‑‑ UPDATED PATH
+          path: ./docs/html          # <-- your actual output folder
           name: github-pages
-          retention-days: 1          # keep for a day (adjust as you wish)
+          retention-days: 1
 
       # -------------------------------------------------
       # 6️⃣ Deploy to GitHub Pages
       # -------------------------------------------------
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy                 # gives us the output `page_url` if we need it
         uses: actions/deploy-pages@v4
