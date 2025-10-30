@@ -4,6 +4,8 @@
  *
  * This file implements formatted output and simple line input using
  * the QEMU VersatileAB UART0. It is designed for early boot and debugging.
+ *
+ * @todo Refactor this file for cleaner function implementation.
  */
 
 #include "printf.h"
