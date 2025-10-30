@@ -1,0 +1,57 @@
+name: Build & Deploy Doxygen Docs
+
+# Run on pushes to the default branch and on PRs targeting it.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# Permissions needed for the deploy‑pages action.
+permissions:
+  contents: read          # checkout
+  pages: write            # publish to GitHub Pages
+  id-token: write         # OIDC token for the deploy action
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+
+      # -------------------------------------------------
+      # 1️⃣ Checkout the repository
+      # -------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # required for proper git history when publishing
+
+      # -------------------------------------------------
+      # 2️⃣ Install Doxygen + Graphviz (for UML/diagrams)
+      # -------------------------------------------------
+      - name: Install Doxygen and Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen graphviz
+
+      # -------------------------------------------------
+      # 3️⃣ Generate the documentation
+      # -------------------------------------------------
+      - name: Build Doxygen docs
+        run: |
+          make docs
+
+      # -------------------------------------------------
+      # 4️⃣ Upload the generated HTML as an artifact
+      # -------------------------------------------------
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/html
+
+      # -------------------------------------------------
+      # 5️⃣ Deploy to GitHub Pages
+      # -------------------------------------------------
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
