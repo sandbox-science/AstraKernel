@@ -95,6 +95,38 @@ void kmalloc_init(void *restrict start, void *restrict limit)
 }
 
 /**
+ * @brief Split a large free memory block into two parts if it is larger than the requested size.
+ *
+ * This function takes a pointer to a free memory block and divides it into
+ * two smaller blocks if the block's size is greater than the requested size
+ * plus the size needed for the allocator's bookkeeping structure.
+ *
+ * The first part of the block will be used to satisfy the allocation request,
+ * while the second part remains free and is linked back into the free list.
+ *
+ * @param curr Pointer to the current free block to be split.
+ * @param size Requested size in bytes for allocation.
+ */
+static void ksplit_block(struct header *curr, size_t size)
+{
+    struct header *new = (struct header *)((char *)curr + sizeof(struct header) + size);
+    *new = (struct header)
+    {
+        .state = BLOCK_FREE,
+        .size  = curr->size - size - sizeof(struct header),
+        .prev  = curr,
+        .next  = curr->next
+    };
+
+    if (curr->next)
+    {
+        curr->next->prev = new;
+    }
+    curr->next = new;
+    curr->size = size;
+}
+
+/**
  * @brief Allocate a block of memory from the kernel heap.
  * 
  * This function searches the heap for the first free block that is large
@@ -136,20 +168,7 @@ void *kmalloc(size_t size)
 
     if (curr->size >= size + sizeof(struct header) + KMALLOC_ALIGN)
     {
-        struct header *new = (struct header *)((char *)curr + sizeof(struct header) + size);
-        *new = (struct header)
-        {
-            .state = BLOCK_FREE,
-            .size  = curr->size - size - sizeof(struct header),
-            .prev  = curr,
-            .next  = curr->next
-        };
-        if (curr->next)
-        {
-            curr->next->prev = new;
-        }
-        curr->next = new;
-        curr->size = size;
+        ksplit_block(curr, size);
     }
     curr->state = BLOCK_USED;
 
@@ -161,6 +180,15 @@ struct header *kmalloc_get_head(void)
     return head;
 }
 
+/**
+ * @brief Merge a block with the its next free block.
+ *
+ * if the the block exist and both the current and next
+ * block are free, merge the next block with the current block.
+ * Keep merging while the next block is free.
+ *
+ * @param curr Pointer to the current free block.
+ */
 static void kmerge(struct header *curr)
 {
     if (!curr || curr->state != BLOCK_FREE)
