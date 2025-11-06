@@ -1,5 +1,0 @@
-<map id="getlines" name="getlines">
-<area shape="rect" id="Node000001" title="Reads a line of text from UART into the given buffer." alt="" coords="145,5,211,31"/>
-<area shape="rect" id="Node000002" href="$kernel_8c.html#a6b8fb674fb359f6ae53dc9c4fb7fc6be" title=" " alt="" coords="5,5,97,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,21,97,21,97,16,129,16"/>
-</map>

@@ -1,9 +1,0 @@
-<map id="_putunsignedint" name="_putunsignedint">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,31,118,56"/>
-<area shape="rect" id="Node000002" href="$printf_8c.html#a59d8819db32c6b5c7365aad05b0778b5" title=" " alt="" coords="166,31,288,56"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,41,150,41,150,46,118,46"/>
-<area shape="rect" id="Node000003" href="$printf_8c.html#a694b6d27273027eb96424e52b798c391" title=" " alt="" coords="336,5,388,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="288,29,320,23,321,28,289,35"/>
-<area shape="rect" id="Node000004" href="$printf_8c.html#a9bdf0418571456c566aa2f329b5f8350" title=" " alt="" coords="339,55,385,80"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="289,52,324,58,323,63,288,57"/>
-</map>
