@@ -240,10 +240,11 @@ void kfree(void *block)
 }
 
 
-// --------------------------
-// kmalloc/kfree tests
-// --------------------------
-
+/** ---------------------------------------------
+ * kmalloc/kfree tests
+ * @todo Find a better way for testing functions
+ * ---------------------------------------------
+ */
 #define TEST_HEAP_SIZE (1024 * 1024)
 static uint8_t heap_space[TEST_HEAP_SIZE];
 static size_t initial_heap_size = 0;
