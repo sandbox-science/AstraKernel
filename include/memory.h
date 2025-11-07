@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stddef.h>
-#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -96,6 +95,12 @@ extern "C"
     *       the function calls `kernel_panic`.
     */
     void   kfree(void *block);
+
+    /**
+     * @brief Entry point for testing `kmalloc` and `kfree`.
+     * 
+     * @return int Return 0 on tests passing, 1 on tests failure.
+     */
     int    kmalloc_test(void);
 #ifdef __cplusplus
 }

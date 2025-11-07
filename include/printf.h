@@ -20,10 +20,10 @@ extern "C" {
 #endif
 
     /**
-    * @enum fmt_state_t
-    * @brief Finite-state machine for parsing format strings.
-    *
-    * The printf parser moves between these states as it consumes characters.
+     * @enum fmt_state_t
+     * @brief Finite-state machine for parsing format strings.
+     * 
+     * The printf parser moves between these states as it consumes characters.
     */
     typedef enum {
         FMT_TEXT,    /**< Normal character output. */
@@ -32,7 +32,7 @@ extern "C" {
     } fmt_state_t;
 
     /**
-    * @brief Bit flags controlling number formatting.
+     * @brief Bit flags controlling number formatting.
     */
     enum {
         FLAG_LONG      = 1 << 0, /**< 'l' length modifier (long / long long). */
@@ -42,11 +42,11 @@ extern "C" {
     };
 
     /**
-    * @struct Format_State
-    * @brief Stores the current numeric value and formatting flags.
-    *
-    * This structure is passed to integer-formatting functions during printf
-    * processing. It represents the transient state for one format specifier.
+     * @struct Format_State
+     * @brief Stores the current numeric value and formatting flags.
+     *
+     * This structure is passed to integer-formatting functions during printf
+     * processing. It represents the transient state for one format specifier.
     */
     typedef struct {
         unsigned long long num; /**< The numeric value to be printed. */
@@ -54,36 +54,36 @@ extern "C" {
     } Format_State;
 
     /**
-    * @brief Prints a null-terminated string over UART.
-    *
-    * @param s The string to output. If NULL, no output occurs.
+     * @brief Transmit a null-terminated string over UART.
+     *
+     * @param s The string to output. If NULL, no output occurs.
     */
     void puts(const char *s);
 
     /**
-    * @brief Prints a formatted string to the UART output.
-    *
-    * @param fmt Format string (supports %c, %s, %d, %u, %x, %X, %p, %%).
-    * @param ... Variable arguments matching the format specifiers.
-    *
-    * This function supports a minimal subset of standard C printf:
-    * - Signed/unsigned integers (`%d`, `%u`)
-    * - Hexadecimal (`%x`, `%X`)
-    * - Pointers (`%p`)
-    * - Characters (`%c`)
-    * - Strings (`%s`)
-    * - Length modifier (`%l`)
+     * @brief Prints a formatted string to the UART output.
+     *
+     * @param fmt Format string (supports %c, %s, %d, %u, %x, %X, %p, %%).
+     * @param ... Variable arguments matching the format specifiers.
+     *
+     * This function supports a minimal subset of standard C printf:
+     * - Signed/unsigned integers (`%d`, `%u`)
+     * - Hexadecimal (`%x`, `%X`)
+     * - Pointers (`%p`)
+     * - Characters (`%c`)
+     * - Strings (`%s`)
+     * - Length modifier (`%l`)
     */
     void printf(const char *fmt, ...);
 
     /**
-    * @brief Reads a line of text from UART into the given buffer.
-    *
-    * @param buffer Destination buffer.
-    * @param length Maximum buffer length (including null terminator).
-    *
-    * Blocks until a newline or carriage return is received.
-    * Supports backspace editing and echoes input characters.
+     * @brief Reads a line of text from UART into the given buffer.
+     *
+     * @param buffer Destination buffer.
+     * @param length Maximum buffer length (including null terminator).
+     *
+     * @note Blocks until a newline or carriage return is received.
+     * Supports backspace editing and echoes input characters.
     */
     void getlines(char *restrict buffer, size_t length);
 
