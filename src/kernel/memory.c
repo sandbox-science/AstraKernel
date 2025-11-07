@@ -24,7 +24,7 @@
  */
 #include "memory.h"
 #include "panic.h"
-#include "printf.h"
+#include <stdint.h>
 
 static struct header *head = NULL;
 /**< Default alignment: at least pointer size; 16 is a good general default. */
