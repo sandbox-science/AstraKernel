@@ -1,5 +1,5 @@
 OUT_DIR    := build/
-SRC_DIRS   := src/kernel src/user
+SRC_DIRS   := src/kernel src/user src/kernel/tests
 
 # Find every .c in those dirs
 SRCS       := $(foreach d,$(SRC_DIRS),$(wildcard $(d)/*.c))

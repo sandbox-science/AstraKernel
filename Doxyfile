@@ -13,7 +13,7 @@ OUTPUT_DIRECTORY       = docs
 INPUT                  = src include docs/pages README.md
 FILE_PATTERNS          = *.c *.h *.md *.s *.ld
 RECURSIVE              = YES
-EXCLUDE_PATTERNS       = */tests/* */build/* */literature/*
+EXCLUDE_PATTERNS       = */tests/* */build/* */literature/* */doc/*
 
 #----------------------------------------------------------
 # Documentation Extraction
@@ -27,7 +27,7 @@ EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
 INTERNAL_DOCS          = YES
 SOURCE_BROWSER         = YES
-INLINE_SOURCES         = NO    # Set to YES if you want code in docs
+INLINE_SOURCES         = YES
 
 #----------------------------------------------------------
 # Preprocessing / Macros
@@ -38,7 +38,9 @@ EXPAND_ONLY_PREDEF     = NO
 PREDEFINED             = __attribute__(x)= \
                          asm(x)= \
                          __asm__= \
-                         KERNEL=1
+                         KERNEL=1 \
+                         __packed \
+                         __aligned(x)
 
 #----------------------------------------------------------
 # Warnings
@@ -64,6 +66,7 @@ DOT_IMAGE_FORMAT       = svg
 CALL_GRAPH             = YES
 CALLER_GRAPH           = YES
 DOT_MULTI_TARGETS      = YES
+CLASS_DIAGRAMS         = YES
 
 #----------------------------------------------------------
 # Markdown / Main Page

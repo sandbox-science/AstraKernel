@@ -39,10 +39,20 @@ extern "C"
 // VIC line number for Timer0/1 on Versatile
 #define IRQ_TIMER01 4
 
+    /**
+     * @brief C-level IRQ handler called from assembly stub in start.s
+     *   Must clear the source interrupt and (for VIC) write VIC_VECTADDR to ack end of interrupt.
+    */
     void irq_handler(void);
     void irq_enable(void);
     void irq_disable(void);
 
+    /**
+     * @brief VersatilePB SP804 timer clock is typically 1 MHz (can be overridden)
+     *
+     * @param tick_hz: desired tick frequency (e.g., 100)
+     * @param timer_clk_hz: input clock to the SP804 (e.g., 1000000)
+    */
     void interrupts_init_timer0(uint32_t tick_hz, uint32_t timer_clk_hz);
 
     static inline void timer0_start_periodic(uint32_t load)

@@ -7,7 +7,6 @@
  *
  * @todo Refactor this file for cleaner function implementation.
  */
-
 #include "printf.h"
 #include "panic.h"
 
@@ -181,11 +180,6 @@ static inline void put_integers(char control, const Format_State *restrict fs)
     }
 }
 
-/**
- * @brief Transmit a null-terminated string.
- *
- * @param s String to transmit. Must be non-null.
- */
 void puts(const char *s)
 {
     while (*s)
@@ -194,16 +188,6 @@ void puts(const char *s)
     }
 }
 
-/**
- * @brief Kernel printf implementation using UART output.
- *
- * @param fmt Format string.
- * @param ... Variable arguments for the format string.
- *
- * Implements a minimal printf supporting:
- * - %c, %s, %p, %d, %u, %x, %X, %l modifiers
- * - %%
- */
 void printf(const char *fmt, ...)
 {
     va_list args;
@@ -337,14 +321,6 @@ static inline char getc(void)
     return (char)(UART0_DR & 0xFF);
 }
 
-/**
- * @brief Read a line of text from UART with basic editing support.
- *
- * @param buffer Destination buffer for the input line.
- * @param length Maximum number of bytes to store (including '\0').
- *
- * Handles backspace and carriage return.
- */
 void getlines(char *restrict buffer, size_t length)
 {
     long long index = 0;

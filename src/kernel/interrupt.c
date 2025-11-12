@@ -5,12 +5,6 @@
 
 volatile uint64_t systicks = 0;
 
-/**
- * @brief VersatilePB SP804 timer clock is typically 1 MHz (can be overridden)
- *
- * @param tick_hz: desired tick frequency (e.g., 100)
- * @param timer_clk_hz: input clock to the SP804 (e.g., 1000000)
- */
 void interrupts_init_timer0(uint32_t tick_hz, uint32_t timer_clk_hz)
 {
     if (tick_hz == 0 || timer_clk_hz == 0)
@@ -33,10 +27,6 @@ void interrupts_init_timer0(uint32_t tick_hz, uint32_t timer_clk_hz)
     vic_enable_timer01_irq();
 }
 
-/**
- * @brief C-level IRQ handler called from assembly stub in start.s
- *   Must clear the source interrupt and (for VIC) write VIC_VECTADDR to ack end of interrupt.
- */
 void irq_handler(void)
 {
     // Check Timer0 MIS (masked interrupt status)
