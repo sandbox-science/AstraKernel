@@ -57,9 +57,9 @@ Make sure you have an ARM cross-compiler installed (e.g., `arm-none-eabi-gcc`) a
 make
 ```
 
-Developers also have the option to run the kernel with custom flags, such as:
+Developers also have the option to run the kernel in debug mode:
 ```sh
-make KFLAGS="-DUSE_KTESTS -MY_DEFFLAG"
+make debug
 ```
 
 > [!IMPORTANT]
