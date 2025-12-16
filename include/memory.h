@@ -1,22 +1,24 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
     /**
-     * @enum block_state
+     * @enum block_state_t
      * @brief Enumeration of block states in the memory allocator.
      *
      * This enum defines the possible states of a memory block in the
      * kernel memory allocator.
      */
-    enum block_state {
+    typedef enum block_state : int32_t
+    {
         BLOCK_FREE = 0, /**< Block is free and available for allocation. */
         BLOCK_USED      /**< Block is currently allocated and in use. */
-    };
+    } block_state_t;
 
     /**
      * @brief Header structure for memory blocks in the allocator.
@@ -26,7 +28,7 @@ extern "C"
      */
     struct header {
         size_t           size;     /**< Size of the memory block (excluding header). */
-        enum block_state state;    /**< State of the block (free or used). */
+        block_state_t    state;    /**< State of the block (free or used). */
         struct header    *next;    /**< Pointer to the next block in the linked list. */
         struct header    *prev;    /**< Pointer to the previous block in the linked list. */
     };

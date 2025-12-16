@@ -25,7 +25,8 @@ extern "C" {
      * 
      * The printf parser moves between these states as it consumes characters.
     */
-    typedef enum {
+    typedef enum fmt_state : int32_t
+    {
         FMT_TEXT,    /**< Normal character output. */
         FMT_PERCENT, /**< After encountering '\%'. */
         FMT_LONG     /**< After encountering '\%l'. */
@@ -35,10 +36,10 @@ extern "C" {
      * @brief Bit flags controlling number formatting.
     */
     enum {
-        FLAG_LONG      = 1 << 0, /**< 'l' length modifier (long / long long). */
-        FLAG_UNSIGNED  = 1 << 1, /**< Future use: unsigned type hint. */
-        FLAG_HEX       = 1 << 2, /**< Future use: hexadecimal output flag. */
-        FLAG_UPPERCASE = 1 << 3  /**< Uppercase hex digits (for %X). */
+        FLAG_LONG      = 1u << 0, /**< 'l' length modifier (long / long long). */
+        FLAG_UNSIGNED  = 1u << 1, /**< Future use: unsigned type hint. */
+        FLAG_HEX       = 1u << 2, /**< Future use: hexadecimal output flag. */
+        FLAG_UPPERCASE = 1u << 3  /**< Uppercase hex digits (for %X). */
     };
 
     /**
@@ -48,9 +49,10 @@ extern "C" {
      * This structure is passed to integer-formatting functions during printf
      * processing. It represents the transient state for one format specifier.
     */
-    typedef struct {
-        unsigned long long num; /**< The numeric value to be printed. */
-        uint8_t flags;          /**< Bitmask of FLAG_* constants describing format. */
+    typedef struct
+    {
+        unsigned long long num;   /**< The numeric value to be printed. */
+        uint32_t           flags; /**< Bitmask of FLAG_* constants describing format. */
     } Format_State;
 
     /**
