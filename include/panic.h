@@ -6,6 +6,7 @@
  * stop execution in response to critical errors.
  */
 #pragma once
+#include "errno.h"
 
 /**
  * @brief Halt the CPU indefinitely.
@@ -18,7 +19,7 @@
 [[noreturn]] void kernel_halt(void);
 
 /**
- * @brief Print a panic message and halt the CPU.
+ * @brief Print a panic message with error code and halt the CPU.
  *
  * Used to stop the kernel when an unrecoverable error occurs.
  *
@@ -27,4 +28,4 @@
  *
  * @note This function never returns.
  */
-[[noreturn]] void kernel_panic(const char *message);
+[[noreturn]] void kernel_panic(const char *message, kerror_t error_code);
