@@ -82,7 +82,7 @@ static unsigned long long _divmod(unsigned long long n, unsigned long long d, un
 {
     if (d == 0)
     {
-        kernel_panic("_divmod: Division by zero");
+        kernel_panic("_divmod: Division by zero", KERR_INVAL);
     }
 
     *r = n % d;

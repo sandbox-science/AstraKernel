@@ -24,6 +24,7 @@
  */
 #include "memory.h"
 #include "panic.h"
+#include "errno.h"
 #include <stdint.h>
 
 static struct header *head = NULL;
@@ -57,7 +58,7 @@ void kmalloc_init(void *restrict start, void *restrict limit)
     const uintptr_t l = (uintptr_t)limit;
     if (l <= s)
     {
-        kernel_panic("kmalloc_init: invalid heap range");
+        kernel_panic("kmalloc_init: invalid heap range", KERR_INVAL);
     }
 
     const uintptr_t aligned_start = align_up_uintptr(s, KMALLOC_ALIGN);
@@ -65,7 +66,7 @@ void kmalloc_init(void *restrict start, void *restrict limit)
 
     if ( (aligned_end - aligned_start) <= sizeof(struct header) )
     {
-        kernel_panic("kmalloc_init: heap too small after alignment");
+        kernel_panic("kmalloc_init: heap too small after alignment", KERR_NO_SPACE);
     }
 
     head  = (struct header *)aligned_start;
@@ -133,7 +134,7 @@ void *kmalloc(size_t size)
 
     if (curr == NULL)
     {
-        kernel_panic("kmalloc: out of memory");
+        kernel_panic("kmalloc:", KERR_NOMEM);
     }
 
     if (curr->size >= size + sizeof(struct header) + KMALLOC_ALIGN)
@@ -184,7 +185,7 @@ void kfree(void *block)
 
     if (curr->state != BLOCK_USED)
     {
-        kernel_panic("kfree: invalid kfree");
+        kernel_panic("kfree:", KERR_INVAL);
     }
 
     curr->state = BLOCK_FREE;
