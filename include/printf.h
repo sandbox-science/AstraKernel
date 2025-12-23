@@ -25,33 +25,39 @@ extern "C" {
      * 
      * The printf parser moves between these states as it consumes characters.
     */
-    typedef enum {
+    typedef enum fmt_state : int32_t
+    {
         FMT_TEXT,    /**< Normal character output. */
         FMT_PERCENT, /**< After encountering '\%'. */
         FMT_LONG     /**< After encountering '\%l'. */
     } fmt_state_t;
 
     /**
-     * @brief Bit flags controlling number formatting.
+     * @enum fmt_flag_t
+     * @brief Formatting flags for integer conversions.
+     *
+     * Used internally by the printf implementation.
     */
-    enum {
-        FLAG_LONG      = 1 << 0, /**< 'l' length modifier (long / long long). */
-        FLAG_UNSIGNED  = 1 << 1, /**< Future use: unsigned type hint. */
-        FLAG_HEX       = 1 << 2, /**< Future use: hexadecimal output flag. */
-        FLAG_UPPERCASE = 1 << 3  /**< Uppercase hex digits (for %X). */
-    };
+    typedef enum fmt_flag : uint32_t
+    {
+        FLAG_LONG      = 1u << 0, /**< 'l' length modifier (long / long long). */
+        FLAG_UNSIGNED  = 1u << 1, /**< Future use: unsigned type hint. */
+        FLAG_HEX       = 1u << 2, /**< Future use: hexadecimal output flag. */
+        FLAG_UPPERCASE = 1u << 3  /**< Uppercase hex digits (for %X). */
+    } fmt_flag_t;
 
     /**
-     * @struct Format_State
-     * @brief Stores the current numeric value and formatting flags.
-     *
-     * This structure is passed to integer-formatting functions during printf
-     * processing. It represents the transient state for one format specifier.
+     * @struct fmt_args_t
+     * @brief Integer conversion arguments for unsigned formats (%u, %x, %X).
+
+     * @details Holds the numeric value and formatting flags for integer output.
+     * Used internally by the printf implementation.
     */
-    typedef struct {
-        unsigned long long num; /**< The numeric value to be printed. */
-        uint8_t flags;          /**< Bitmask of FLAG_* constants describing format. */
-    } Format_State;
+    typedef struct
+    {
+        unsigned long long num;   /**< Unsigned numeric value to format. */
+        fmt_flag_t         flags; /**< Formatting flags (length, case, etc.). */
+    } fmt_args_t;
 
     /**
      * @brief Transmit a null-terminated string over UART.

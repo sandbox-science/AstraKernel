@@ -82,7 +82,7 @@ static unsigned long long _divmod(unsigned long long n, unsigned long long d, un
 {
     if (d == 0)
     {
-        kernel_panic("_divmod: Division by zero");
+        kernel_panic("_divmod: Division by zero", KERR_INVAL);
     }
 
     *r = n % d;
@@ -139,9 +139,9 @@ static inline void put_signed(long long num)
  * @param control Format specifier character ('d', 'u', 'x', or 'X').
  * @param fs Pointer to the current format state.
  */
-static inline void put_integers(char control, const Format_State *restrict fs)
+static inline void put_integers(char control, const fmt_args_t *restrict fs)
 {
-    bool is_long                = fs->flags & FMT_LONG;
+    bool is_long                = fs->flags & FLAG_LONG;
     bool uppercase              = fs->flags & FLAG_UPPERCASE;
     unsigned long long value    = fs->num;
 
@@ -194,7 +194,7 @@ void printf(const char *fmt, ...)
     va_start(args, fmt);
 
     fmt_state_t state   = FMT_TEXT;
-    Format_State fs     = {0};
+    fmt_args_t fs     = {0};
 
     while (*fmt)
     {

@@ -18,7 +18,7 @@ static inline uint32_t _udiv32(uint32_t n, uint32_t d)
 {
     if (d == 0)
     {
-        kernel_panic("Error: Division by zero in udiv32.\n");
+        kernel_panic("Division by zero in udiv32.", KERR_INVAL);
     }
 
     uint32_t quotient  = 0;

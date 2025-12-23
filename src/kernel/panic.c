@@ -1,5 +1,6 @@
 #include "panic.h"
 #include "printf.h"
+//#include "errno.h"
 
 /**
  * @internal
@@ -32,18 +33,16 @@
 
 /**
  * @internal
- * @brief Print a panic message and halt the CPU.
+ * @brief Print a panic message with error code and halt the CPU.
  *
  * Implementation details:
- * - Currently uses `printf()` to display the error message.
+ * - Uses `printf()` to display the error message.
+ * - Fetch the kernel error string based on the kernel error code.
  * - Calls ::kernel_halt() after printing.
- *
- * @todo Replace string-only message with structured error codes
- *       (see errno.h/.c).
- *       https://github.com/dthain/basekernel/blob/master/library/errno.c
  */
-[[noreturn]] void kernel_panic(const char *message)
+[[noreturn]] void kernel_panic(const char *message, kerror_t kerr_code)
 {
-    printf("%s", message);
+    const char* code_str = kerr_is_err(kerr_code) ? error_str(kerr_code) : "no error code";
+    printf("[PANIC] %s [%s]\n", message, code_str);
     kernel_halt();
 }
