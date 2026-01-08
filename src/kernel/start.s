@@ -59,7 +59,7 @@ _start:
     LDR     sp, =__stack_top__
     BIC     sp, sp, #7            // Align to 8 bytes
 
-    // Switch to IRQ mode by init its own stack
+    // Switch to IRQ mode to init its own stack
     MRS     R0, cpsr              // Save current CPSR
     BIC     R1, R0, #0x1F         // Clear mode bits
     ORR     R1, R1, #0x12         // Set mode = IRQ (0b10010)
@@ -69,13 +69,42 @@ _start:
     LDR     sp, =irq_stack_top    // Give IRQ mode its own stack
     BIC     sp, sp, #7
 
+    // Switch to FIQ mode to init its own stack
+    BIC     R1, R0, #0x1F
+    ORR     R1, R1, #0x11         // Set mode = FIQ (0b10001)
+    ORR     R1, R1, #(1 << 7)     // Keep IRQ masked
+    ORR     R1, R1, #(1 << 6)     // Keep FIQ masked
+    MSR     cpsr_c, R1
+
+    LDR     sp, =fiq_stack_top
+    BIC     sp, sp, #7
+
+    // Switch to Abort mode to init its own stack
+    BIC     R1, R0, #0x1F
+    ORR     R1, R1, #0x17         // Set mode = ABT (0b10111)
+    ORR     R1, R1, #(1 << 7)     // Keep IRQ masked
+    ORR     R1, R1, #(1 << 6)     // Keep FIQ masked
+    MSR     cpsr_c, R1
+
+    LDR     sp, =abt_stack_top
+    BIC     sp, sp, #7
+
+    // Switch to Undefined mode to init its own stack
+    BIC     R1, R0, #0x1F
+    ORR     R1, R1, #0x1B         // Set mode = UND (0b11011)
+    ORR     R1, R1, #(1 << 7)     // Keep IRQ masked
+    ORR     R1, R1, #(1 << 6)     // Keep FIQ masked
+    MSR     cpsr_c, R1
+
+    LDR     sp, =und_stack_top
+    BIC     sp, sp, #7
+
     // Back to SVC with IRQ/FIQ still masked
-    MRS     R1, cpsr               // R1 <- CPSR in IRQ mode
-    BIC     R1, R1, #0x1F
-    ORR     R1, R1, #0x13          // Set mode = SVC
-    ORR     R1, R1, #(1 << 7)      // I = 1 (IRQ)
-    ORR     R1, R1, #(1 << 6)      // F = 1 (FIQ)
-    MSR     cpsr_c, R1             // Back to SVC
+    BIC     R1, R0, #0x1F
+    ORR     R1, R1, #0x13         // Set mode = SVC
+    ORR     R1, R1, #(1 << 7)     // I = 1 (IRQ)
+    ORR     R1, R1, #(1 << 6)     // F = 1 (FIQ)
+    MSR     cpsr_c, R1
     
     .extern __data_load
     .extern __data_start
@@ -114,6 +143,18 @@ hang:
 irq_stack:
     .space 1024          // 1 KB stack for IRQ mode
 irq_stack_top:
+
+fiq_stack:
+    .space 1024          // 1 KB stack for FIQ mode
+fiq_stack_top:
+
+abt_stack:
+    .space 1024          // 1 KB stack for Abort mode
+abt_stack_top:
+
+und_stack:
+    .space 1024          // 1 KB stack for Undefined mode
+und_stack_top:
 
 /* ------------------------------------------------------------- */
 /* Exception Entries                                             */
@@ -155,4 +196,3 @@ fiq_handler:       B   hang
     .section .rodata
 svc_msg:
     .asciz "SVC Exception Handled!\r\n"
-
