@@ -5,51 +5,54 @@
 \chapter{Introduction}
 \section{Getting Started}
 % Perhaps, move this block after building and running AstraKernel subsection
-AstraKernel begins its life in a small bootstrap routine, written in ARM assembly, 
-that prepares the processor’s state before passing control to the main C kernel. 
-This bootstrap code is responsible for setting up the stack pointer, clearing 
-the uninitialized data section (\texttt{.bss}), and ensuring a clean environment 
-for the kernel’s entry point. Below is the initial assembly code that executes 
-at startup: \\
+AstraKernel begins its life in a small bootstrap routine, written in ARM assembly,
+that prepares the processor’s state before passing control to the main C kernel.
+This bootstrap code programs the exception vector base, sets up mode-specific
+stacks (SVC/IRQ/FIQ/ABT/UND), initializes \texttt{.data}, clears \texttt{.bss},
+and ensures a clean environment for the kernel’s entry point. Below is a trimmed
+excerpt of the current startup sequence: \\
 
-\begin{lstlisting}[language={C}, caption={Initial bootstrap code for AstraKernel.}, label={lst:bootstrap}]
-    .section .text
+\begin{lstlisting}[language={C}, caption={Bootstrap excerpt for AstraKernel.}, label={lst:bootstrap}]
+    .section .vectors
     .global _start
-
 _start:
-    // Set up the stack pointer
-    LDR sp, =__stack_top__
-    BIC sp, sp, #7
+    // Switch to SVC, mask IRQ/FIQ
+    MRS     R0, cpsr
+    BIC     R0, R0, #0x1F
+    ORR     R0, R0, #0x13
+    ORR     R0, R0, #(1 << 7)
+    ORR     R0, R0, #(1 << 6)
+    MSR     cpsr_c, R0
 
-    // Zero the .bss section
-    LDR R0, =__bss_start   // Start address (symbol from linker script)
-    LDR R1, =__bss_end     // End address (symbol from linker script)
-    MOV R2, #0             // init zero-value for BSS clearing
+    // Point VBAR at the vector table
+    LDR     R0, =vectors_base
+    MCR     P15, 0, R0, C12, C0, 0
+    ISB
 
-zero_bss:
-    // Check if we are done zeroing the BSS
-    CMP R0, R1             // Compare current address to end
-    BGE bss_done           // If done, skip zeroing
-    STR R2, [R0], #4       // Store zero at [r0], increment r0 by 4
-    B zero_bss
+    // Set mode stacks (SVC/IRQ/FIQ/ABT/UND)
+    LDR     sp, =__stack_top__
+    // ... switch modes and set stack pointers ...
 
-bss_done:
-    // Call kernel_main function
-    BL kernel_main
+    // Copy .data from LMA to VMA
+    LDR     R0, =__data_load
+    LDR     R1, =__data_start
+    LDR     R2, =__data_end
+    // ... copy loop ...
 
-hang:
-    // Halt if kernel_main returns (should not happen)
-    B hang		// Infinite loop
+    // Clear .bss
+    LDR     R0, =__bss_start
+    LDR     R1, =__bss_end
+    MOV     R2, #0
+    // ... zero loop ...
+
+    BL      kernel_main
 \end{lstlisting}
 
-This startup sequence is the essential first step for any kernel, ensuring the 
-CPU is properly initialized and memory is in a known state before higher-level 
-code takes over. Once these preparations are complete, the \texttt{kernel\_main} 
-function from \texttt{kernel/kernel.c} is called, marking the transition from 
+This startup sequence is the essential first step for any kernel, ensuring the
+CPU is properly initialized and memory is in a known state before higher-level
+code takes over. Once these preparations are complete, the \texttt{kernel\_main}
+function from \texttt{src/kernel/kernel.c} is called, marking the transition from
 low-level assembly to the C code that forms the core of AstraKernel.
-
-% TODO: Explain the assembly code in more detail, specifically the
-% stack pointer setup and BSS clearing process.
 
 \subsection{Prerequisites}
 
@@ -112,14 +115,14 @@ built kernel image. \\
 
 \begin{lstlisting}[language={make}, caption={Makefile for AstraKernel.}, label={lst:makefile}]
   # Assembly start.o goes to build/
-  $(OUT_DIR)start.o: kernel/start.S
+  $(OUT_DIR)start.o: src/kernel/start.s
     @mkdir -p $(OUT_DIR)
     $(AS) -c $< -o $@
 
   # Pattern rule for any .c -> build/*.o
   $(OUT_DIR)%.o: %.c
     @mkdir -p $(OUT_DIR)
-    $(CC) $(CFLAGS) -c $< -o $@
+    $(CC) $(CFLAGS) -c $< -o $@ $(KFLAGS)
 
   # Link everything
   $(OUT_DIR)kernel.elf: $(OUT_DIR)start.o $(OBJS) kernel.ld
@@ -137,6 +140,27 @@ built kernel image. \\
   from the \texttt{build/} directory.
 \end{info}
 
+\subsection{Build Modes}
+\paragraph{Overview}
+The Makefile provides a couple of build-time options to enable tests and
+instrumentation. These are passed via \texttt{KFLAGS}.
+
+\begin{itemize}
+  \item \texttt{USE\_KTESTS}: enable the kernel test suite
+  (see \texttt{src/kernel/tests/test\_memory.c}).
+  \item \texttt{KLOG\_USE\_TICKS}: include tick counts in \texttt{KLOG} output
+  and start the timer/IRQs early in \texttt{kernel\_main()}.
+\end{itemize}
+
+\paragraph{Examples}
+\begin{lstlisting}[language=bash, caption={Build modes.}]
+  # Run kernel tests
+  make KFLAGS="-DUSE_KTESTS"
+
+  # Enable tick timestamps in logs
+  make KFLAGS="-DKLOG_USE_TICKS"
+\end{lstlisting}
+
 \noindent
 If the build is successful, you will see the output similar to the following:
 
@@ -148,5 +172,15 @@ If the build is successful, you will see the output similar to the following:
 \end{figure}
 
 \subsection{Codebase's Overview}
-% TODO: Write a brief overview of the codebase structure.
-Coming soon...
+\begin{itemize}
+  \item \texttt{src/kernel/}: core kernel code (boot, interrupts, memory, panic, errno).
+  \item \texttt{src/user/}: basic user-facing utilities (printf, string, datetime, clear).
+  \item \texttt{src/kernel/tests/}: kernel tests (currently \texttt{kmalloc}).
+  \item \texttt{include/}: public headers for kernel and user modules.
+  \item \texttt{kernel.ld}: linker script and memory layout (vectors, text, rodata, data, bss, heap, stacks).
+  \item \texttt{Makefile}: build rules and flags (including \texttt{KFLAGS}).
+  \item \texttt{doc/}: LaTeX source for the kernel manual; \texttt{docs/} contains generated docs.
+  \item \texttt{docs/pages/}: short markdown notes (panic, memory).
+  \item \texttt{literature/}: hardware reference PDFs for VIC, timers, and ARM toolchain.
+  \item \texttt{Dockerfile} and \texttt{Dockerfile.dev}: containerized build flows.
+\end{itemize}
