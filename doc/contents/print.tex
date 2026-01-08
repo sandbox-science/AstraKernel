@@ -16,38 +16,34 @@
 \subsection{\texttt{printf(char *s, ...)}}
 
 \paragraph{Description}
-Sends a null-terminated format string over UART. If an incorrect datatype is given 
-for a format specifier, \underline{the behavior is undefined}. If a format specifier 
-is given without a matching argument, it is simply skipped when the string is outputted. 
-The following format specifiers are supported:
+Sends a null-terminated format string over UART. If an incorrect datatype is given
+for a format specifier, \underline{the behavior is undefined}. If a format specifier
+is given without a matching argument, the behavior is undefined. The following
+format specifiers are supported:
 
 \paragraph{Supported Format Specifiers}
 \begin{itemize}
   \item \texttt{\%c}: Expects a single character.
   \item \texttt{\%s}: Expects a null-terminated string.
-  \item \texttt{\%d}: For 32-bit signed integers in the range \texttt{-2147483648} to \texttt{2147483647}.
-  \item \texttt{\%ld}: For 64-bit signed integers in the range \texttt{-9223372036854775808} to \texttt{9223372036854775807}, excluding the range specified above, for \textbf{\%d}.
-  \item \texttt{\%lu}: For 64-bit unsigned integers in the range \texttt{2147483648} to \texttt{18446744073709551615}.
-  \item \texttt{\%x}, \texttt{\%X}: For 32-bit unsigned integers in the range \texttt{0} to \texttt{2147483647}, where the case of \texttt{x} determines the case of the hexadecimal digits (\texttt{a-f} or \texttt{A-F}).
-  \item \texttt{\%lx}, \texttt{\%lX}: For 64-bit unsigned integers printed in hexadecimal format. Has the same range as \textbf{\%lu}. The case of \texttt{x} determines the case of the hexadecimal digits (\texttt{a-f} or \texttt{A-F}).
+  \item \texttt{\%d}: Signed integers (\texttt{int}).
+  \item \texttt{\%u}: Unsigned integers (\texttt{unsigned int}).
+  \item \texttt{\%x}, \texttt{\%X}: Unsigned integers printed in hexadecimal; case depends on \texttt{x}/\texttt{X}.
+  \item \texttt{\%ld}: Signed \texttt{long} integers.
+  \item \texttt{\%lu}: Unsigned \texttt{long} integers.
+  \item \texttt{\%lx}, \texttt{\%lX}: Unsigned \texttt{long} printed in hexadecimal.
+  \item \texttt{\%p}: Pointer, printed as \texttt{0x} followed by hex digits.
   \item \texttt{\%\%}: Outputs a literal \texttt{\%}.
-  \item \texttt{\%}: If the format specifier is not followed by a valid character, prints \texttt{(null)}.
+  \item Unknown specifier: the sequence is printed verbatim as \texttt{\%x} (where \texttt{x} is the unknown specifier).
 \end{itemize}
 
 \begin{flushleft}
-All the ranges specified above are inclusive. Also, note that integers in the 
-range \texttt{-2147483648} to \texttt{2147483647} are passed as 32 bit integers 
-and any integers not part of this range are passed as 64 bit integers \underline{by default}.
-If desired, integers of this range can be cast as \texttt{long long} or \texttt{unsigned long long} 
-for use with the format specifiers prefixed by the character \texttt{l}.
+On ARMv7-A, \texttt{int} and \texttt{long} are 32-bit, so \texttt{\%d} and \texttt{\%ld}
+are the same width (likewise for \texttt{\%u} and \texttt{\%lu}). 64-bit integer
+formatting (e.g., \texttt{\%lld} or \texttt{\%llu}) is not implemented.
 \end{flushleft}
 
 \subsection*{Examples}
 \begin{lstlisting}[language={C}, caption={Examples of printf usage in AstraKernel.}, label={lst:printf_examples}]
-  // Printing long long integers
-  printf("%lu %ld %ld\n", 18446744073709551615, -9223372036854775808, 
-  9223372036854775807);
-
   // Printing 32-bit signed integers
   printf("%d %d\n", 2147483647, -2147483648);
 
@@ -55,9 +51,8 @@ for use with the format specifiers prefixed by the character \texttt{l}.
   printf("%x %x %X %X\n", 2147483647, 1234, 2147483647, 1234);
   // Output: 7fffffff 4d2 7FFFFFFF 4D2
 
-  // Printing unsigned long long integers in hex
-  printf("%lX %lx\n", 0x123456789ABCDEF0, 9223372036854775809);
-  // Output: 123456789ABCDEF0 8000000000000001
+  // Printing pointers
+  printf("UART base: %p\n", (void *)0x101F1000);
 
   // Printing a character
   printf("Name: %c\n", 'b');
@@ -68,7 +63,7 @@ for use with the format specifiers prefixed by the character \texttt{l}.
   // Printing a '%'
   printf("100%%\n");
 
-  // Printing a null character
-  printf("%\n");
-  // Output: (null)
+  // Unknown specifiers are passed through
+  printf("%q\n");
+  // Output: %q
 \end{lstlisting}
