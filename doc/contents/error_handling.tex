@@ -1,0 +1,39 @@
+% ------------------------------------------------
+% *** Section: Error Handling ***
+% ------------------------------------------------
+\newpage
+\chapter{Error Handling}
+\section{Error Codes}
+\paragraph{Overview}
+AstraKernel uses a small set of negative error codes defined in
+\texttt{include/errno.h}. These values are intended for internal kernel APIs
+that may fail during early boot or runtime.
+
+\paragraph{Defined Codes}
+\begin{itemize}
+  \item \texttt{KERR\_OK} (0): success.
+  \item \texttt{KERR\_NOT\_FOUND} (-1): resource not found.
+  \item \texttt{KERR\_NOMEM} (-2): out of memory.
+  \item \texttt{KERR\_NO\_SPACE} (-3): no space available.
+  \item \texttt{KERR\_INVAL} (-4): invalid request or parameter.
+\end{itemize}
+
+\section{Helpers}
+\paragraph{Overview}
+The errno module provides small helper functions for checking and displaying
+error codes:
+
+\begin{itemize}
+  \item \texttt{kerr\_is\_ok(e)} returns true if \texttt{e == KERR\_OK}.
+  \item \texttt{kerr\_is\_err(e)} returns true if \texttt{e < 0}.
+  \item \texttt{error\_str(e)} returns a static string for the code.
+\end{itemize}
+
+\subsection*{Example}
+\begin{lstlisting}[language=C, caption={Error code formatting example.}]
+  kerror_t err = KERR_NOMEM;
+  if (kerr_is_err(err))
+  {
+      printf("error: %s\n", error_str(err));
+  }
+\end{lstlisting}
