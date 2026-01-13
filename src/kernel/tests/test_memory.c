@@ -1,5 +1,6 @@
 #include "memory.h"
 #include "printf.h"
+#include "log.h"
 
 
 #define TEST_HEAP_SIZE (1024 * 1024)
@@ -23,13 +24,13 @@ static int kmalloc_test_single_alloc()
     void *ptr = kmalloc(128);
     if (!ptr)
     {
-        printf("kmalloc returned NULL\n");
+        KLOG(KLOG_ERROR, "kmalloc returned NULL");
         return 0;
     }
     struct header *head = kmalloc_get_head();
     if (head->state != BLOCK_USED)
     {
-        printf("Block not marked as used after kmalloc\n");
+        KLOG(KLOG_ERROR, "Block not marked as used after kmalloc");
         return 0;
     }
     return 1;
@@ -42,12 +43,12 @@ static int kmalloc_test_single_alloc_and_free()
     struct header *head = kmalloc_get_head();
     if (head->state != BLOCK_FREE)
     {
-        printf("Block not free after kfree\n");
+        KLOG(KLOG_ERROR, "Block not free after kfree");
         return 0;
     }
     if (head->size != initial_heap_size)
     {
-        printf("Block size incorrect after kfree: got %lu expected %lu\n", head->size, initial_heap_size);
+        KLOG(KLOG_ERROR, "Block size incorrect after kfree: got %lu expected %lu\n", head->size, initial_heap_size);
         return 0;
     }
     return 1;
@@ -62,12 +63,12 @@ static int kmalloc_test_merge_free_blocks()
     struct header *head = kmalloc_get_head();
     if (head->state != BLOCK_FREE)
     {
-        printf("Head not free after merging\n");
+        KLOG(KLOG_ERROR, "Head not free after merging");
         return 0;
     }
     if (head->size != initial_heap_size)
     {
-        printf("Merged size incorrect: got %lu expected %lu\n", head->size, initial_heap_size);
+        KLOG(KLOG_ERROR, "Merged size incorrect: got %lu expected %lu\n", head->size, initial_heap_size);
         return 0;
     }
     return 1;
@@ -141,12 +142,12 @@ static int kfree_merge_order_test()
     struct header *head = kmalloc_get_head();
     if (head->state != BLOCK_FREE)
     {
-        printf("Heap not free after out-of-order merges\n");
+        KLOG(KLOG_ERROR, "Head not free after out-of-order merging");
         return 0;
     }
     if (head->size != initial_heap_size)
     {
-        printf("Heap size incorrect after out-of-order merge: got %lu expected %lu\n", head->size, initial_heap_size);
+        KLOG(KLOG_ERROR, "Heap size incorrect after out-of-order merge: got %lu expected %lu\n", head->size, initial_heap_size);
         return 0;
     }
     return 1;
@@ -155,7 +156,7 @@ static int kfree_merge_order_test()
 // --- Main test runner ---
 int kmalloc_test()
 {
-    printf("\n\nRunning kmalloc tests...\n");
+    KLOG(KLOG_INFO, "Running kmalloc tests...");
 
     int (*tests[])(void) = {
         kmalloc_test_single_alloc,
@@ -191,12 +192,12 @@ int kmalloc_test()
 
         if (!result)
         {
-            printf("FAILED\n");
+            KLOG(KLOG_ERROR, "FAILED");
             return 1;
         }
-        printf("PASSED\n");
+        KLOG(KLOG_INFO, "PASSED");
         test_passed++;
     }
-    printf("\nkmalloc_test() -> %d/%d tests passed!\n\n", test_passed, num_tests);
+    KLOG(KLOG_INFO, "\nkmalloc_test() -> %d/%d tests passed!\n\n", test_passed, num_tests);
     return 0;
 }

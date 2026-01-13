@@ -1,6 +1,5 @@
 #include "panic.h"
-#include "printf.h"
-//#include "errno.h"
+#include "log.h"
 
 /**
  * @internal
@@ -43,6 +42,6 @@
 [[noreturn]] void kernel_panic(const char *message, kerror_t kerr_code)
 {
     const char* code_str = kerr_is_err(kerr_code) ? error_str(kerr_code) : "no error code";
-    printf("[PANIC] %s [%s]\n", message, code_str);
+    KLOG(KLOG_PANIC, "%s [%s]\n", message, code_str);
     kernel_halt();
 }

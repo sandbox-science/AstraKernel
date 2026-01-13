@@ -7,12 +7,14 @@ extern "C"
 {
 #endif
 
+extern volatile uint64_t systicks;
+
 // PL190 VIC (interrupt controller)
 // ref: PrimeCell Vectored Interrupt Controller (PL190) TRM (Page3-7)
 #define VIC_BASE        0x10140000u
 #define VIC_INTSELECT   (*(volatile uint32_t *)(VIC_BASE + 0x00C)) // 0=IRQ,1=FIQ
 #define VIC_INTENABLE   (*(volatile uint32_t *)(VIC_BASE + 0x010)) // set bit=enable
-#define VIC_INTENCLR    (*(volatile utin32_t *)(VIC_BASE + 0x014)) // clear bit=disable
+#define VIC_INTENCLR    (*(volatile uint32_t *)(VIC_BASE + 0x014)) // clear bit=disable
 #define VIC_SOFT_INT    (*(volatile uint32_t *)(VIC_BASE + 0x018))
 #define VIC_SOFT_INTCLR (*(volatile uint32_t *)(VIC_BASE + 0x01C))
 

@@ -1,12 +1,17 @@
 \newcommand{\DocTitle}{AstraKernel Documentation}
 \newcommand{\DocAuthor}{Chris Dedman}
+\newcommand{\DocDate}{\today}
 \title{\DocTitle}
 \author{\DocAuthor}
-\date{2025-05-19}
+\date{\DocDate}
 % -----------------------------------------------------
 
 % Layout: 1-inch margins all around
 \geometry{letterpaper, margin=1in}
+
+% Subtle warm page background for screen reading
+\definecolor{pagebg}{RGB}{251,250,247}
+\pagecolor{pagebg}
 
 %— Base pagestyle: no headers, footer at center
 \fancypagestyle{base}{
@@ -17,26 +22,32 @@
 
 %— Preliminary pages (uses 'base', but moves foot up)
 \fancypagestyle{prelim}{
-  \fancypagestyle{base}% inherit
+  \fancyhf{}
+  \cfoot{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
   \setlength{\footskip}{0.5in}
 }
 
 %— Main body pages (page number in header)
 \fancypagestyle{main}{
-  \fancypagestyle{base}% inherit
+  \fancyhf{}
+  \renewcommand{\headrulewidth}{0pt}
   \fancyhead[R]{\thepage}
-  \setlength{\headsep}{0.5in}
+  \setlength{\headsep}{0.6in}
 }
 
 
-% Code style
-\definecolor{codegray}{gray}{0.95}
-\definecolor{darkergreen}{RGB}{0,100,0}
+% Code style (vibrant but consistent)
+\definecolor{codegray}{gray}{0.97}
+\definecolor{accent}{RGB}{26,94,122}
+\definecolor{codeblue}{RGB}{26,94,122}
+\definecolor{codered}{RGB}{136,44,32}
+\definecolor{codegreen}{RGB}{46,92,62}
 \lstset{
-    basicstyle=\ttfamily\scriptsize,
-    keywordstyle=\color{blue},
-    stringstyle=\color{red},
-    commentstyle=\color{darkergreen},
+    basicstyle=\ttfamily\footnotesize\raggedright,
+    keywordstyle=\color{codeblue},
+    stringstyle=\color{codered},
+    commentstyle=\color{codegreen},
     numbers=left,
     numberstyle=\tiny\color{gray},
     stepnumber=1,
@@ -45,13 +56,16 @@
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
-    frame=lines,
-    framerule=0.5pt,
+    frame=single,
+    framerule=0.3pt,
     tabsize=2,
     captionpos=b,
     breaklines=true,
+    columns=fullflexible,
     keepspaces=true,
     breakatwhitespace=false,
+    aboveskip=0.75\baselineskip,
+    belowskip=0.75\baselineskip,
     escapeinside={\%*}{*)}
 }
 
@@ -60,7 +74,7 @@
 \renewcommand{\thesection}{\Roman{section}.}
 \renewcommand{\thesubsection}{\Alph{subsection}.}
 
-\newcommand{\code}[1]{\texttt{\textcolor{blue}{#1}}}
+\newcommand{\code}[1]{\texttt{\textcolor{codeblue}{#1}}}
 \makeatletter
 % === redefine \section so it has less (even negative) vertical space before it
 \renewcommand\section{%
@@ -73,20 +87,39 @@
 }
 \makeatother
 
+% Make \paragraph a block heading to avoid run-in overlap with listings
+\makeatletter
+\renewcommand\paragraph{%
+  \@startsection{paragraph}%
+    {4}%
+    {\z@}%
+    {1.0ex \@plus .2ex}%
+    {0.6ex \@plus .2ex}%
+    {\normalfont\normalsize\bfseries}%
+}
+\makeatother
+
 % Customizing captions
-\captionsetup{font=small, labelfont=bf}
+\captionsetup{font=small, labelfont=bf, skip=6pt}
+
+% Avoid header height warnings with fancyhdr
+\setlength{\headheight}{14pt}
+
+% Chapter spacing (titlesec)
+\titlespacing*{\chapter}{0pt}{-6pt}{18pt}
+
 
 % HYPERLINKS & METADATA
 \hypersetup{
-  pdftitle   = {\@DocTitle},
-  pdfauthor  = {\@DocAuthor},
+  pdftitle   = {\DocTitle},
+  pdfauthor  = {\DocAuthor},
   pdfkeywords = {AstraKernel, Documentation, LaTeX},
   pdfsubject = {AstraKernel Documentation},
   colorlinks=true,
-  citecolor=magenta,
-  linkcolor=blue,
-  filecolor=green,      
-  urlcolor=cyan,
+  citecolor=accent,
+  linkcolor=accent,
+  filecolor=accent,
+  urlcolor=accent,
 }
 
 % Custom command for INFO boxes
