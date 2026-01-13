@@ -48,7 +48,7 @@ extern "C" {
 
     /**
      * @struct fmt_args_t
-     * @brief Integer conversion arguments for unsigned formats (%u, %x, %X).
+     * @brief Integer conversion arguments for unsigned formats ( \%u, \%x, \%X ).
 
      * @details Holds the numeric value and formatting flags for integer output.
      * Used internally by the printf implementation.

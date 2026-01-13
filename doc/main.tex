@@ -10,6 +10,7 @@
 % -----------------------------------------------------
 % *** Front Content ***
 % -----------------------------------------------------
+\pagenumbering{roman}
 \input{front/title_page}
 \input{front/toc}
 \input{front/preface}
@@ -17,7 +18,11 @@
 % % -----------------------------------------------------
 % % *** Main Content ***
 % % -----------------------------------------------------
+\cleardoublepage
+\pagenumbering{arabic}
 \input{contents/introduction}
+\input{contents/kernel_core}
+\input{contents/error_handling}
 \input{contents/print}
 \input{contents/string}
 \input{contents/datetime}

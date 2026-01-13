@@ -6,30 +6,28 @@
 \addcontentsline{toc}{section}{Preface}
 \section*{Preface}
 
-This documentation serves as a comprehensive guide to the AstraKernel project, 
-a minimal operating system kernel written in modern C and ARM assembly. 
-Designed to run on QEMU’s VersatileAB (Cortex-A8) emulated platform, 
-AstraKernel is intended to provide a clear and approachable introduction 
-to the fundamental concepts of operating system design and development.
-This project also reflects my personal journey in learning about kernel development  
-and systems programming.
+This documentation serves as a practical guide to the AstraKernel project,
+a minimal operating system kernel written in modern C and ARM assembly.
+Designed to run on QEMU’s VersatileAB (Cortex-A8) emulated platform,
+AstraKernel is intended to provide a clear and approachable introduction
+to the fundamentals of kernel development. This project also reflects my
+personal journey in learning about systems programming.
 
-This project was developed with a focus on clarity, simplicity, and educational value. 
-Rather than attempting to recreate the complexity of established operating systems, 
-AstraKernel’s goal is to strip away unnecessary abstractions and present a clean, 
+This project was developed with a focus on clarity, simplicity, and educational value.
+Rather than attempting to recreate the complexity of established operating systems,
+AstraKernel’s goal is to strip away unnecessary abstractions and present a clean,
 understandable codebase for anyone interested in the "bare metal" foundations of computing.
 
-Through hands-on implementation of kernel bootstrapping, direct hardware communication, 
-and basic user interaction, AstraKernel demonstrates how fundamental OS components 
-come together. The project showcases how modern C best practices can be utilized 
-in a systems programming context to create code that is maintainable, portable, and robust, 
-while still being accessible to those new to kernel development. The design of this kernel 
-emphasizes modularity and extensibility, allowing developers to easily add new features 
-or modify existing ones. This makes it ideal for educational purposes, as it provides 
-a clear structure that can be followed and built upon.
+Through hands-on implementation of kernel bootstrapping, direct hardware communication,
+and basic user interaction, AstraKernel demonstrates how fundamental OS components
+come together. The project showcases how modern C best practices can be used in a
+systems programming context to create code that is maintainable, portable, and robust,
+while still being accessible to those new to kernel development. The design emphasizes
+modularity and extensibility, allowing developers to add new features or modify existing
+ones as they learn. This makes it ideal for educational purposes and experimentation.
 
-It is my hope that AstraKernel will not only serve as a foundation for those wishing 
-to understand kernel development, but also inspire curiosity and confidence in exploring 
+It is my hope that AstraKernel will not only serve as a foundation for those wishing
+to understand kernel development, but also inspire curiosity and confidence in exploring
 lower-level aspects of computer systems.
 
 \begin{info}
@@ -43,7 +41,7 @@ lower-level aspects of computer systems.
 \section*{About This Project}
 \paragraph{Resources}
 
-To guide my learning and support development of AstraKernel, I am using the following resources, 
+To guide my learning and support development of AstraKernel, I am using the following resources,
 which are particularly valuable for foundational and practical understanding of OS design:
 \begin{itemize}
   \item \textbf{Operating Systems: Three Easy Pieces} by Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau
@@ -52,19 +50,19 @@ which are particularly valuable for foundational and practical understanding of 
 
 \paragraph{Contributions}
 
-AstraKernel is an open source project, and I encourage contributions from anyone 
-interested in improving, extending the kernel or simply experiment with it. I also 
+AstraKernel is an open source project, and I encourage contributions from anyone
+interested in improving or extending the kernel or simply experimenting with it. I also
 encourage anyone to improve this documentation, as it is a work in progress.
 If you would like to contribute, please feel free to open an issue or pull request on the GitHub repository.
 \\
 \begin{info}
-  You can join the Matrix Server \url{https://matrix.to/#/#sandboxscience:matrix.org} 
-  for general SandBox Science discussion as well as project-specific discussion such 
+  You can join the Matrix Server \url{https://matrix.to/#/#sandboxscience:matrix.org}
+  for general SandBox Science discussion as well as project-specific discussion such
   as AstraKernel development.
 \end{info}
 
 \paragraph{Acknowledgments}
-Specially thanks to the following individuals for their contributions:
+Special thanks to the following individuals for their contributions:
 \begin{itemize}
   \item \textbf{shade5144} (\url{https://github.com/shade5144}) for contributing 
   the initial version of the \texttt{printf} and \texttt{datetime} function as 
@@ -73,6 +71,6 @@ Specially thanks to the following individuals for their contributions:
 
 \paragraph{Disclaimer}
 
-AstraKernel is currently in its early stages of development and is not intended for production use. 
-It is primarily an educational and experimental project. The code is provided as-is, 
+AstraKernel is currently in its early stages of development and is not intended for production use.
+It is primarily an educational and experimental project. The code is provided as-is,
 without any warranties or guarantees of any kind. Use it at your own risk.

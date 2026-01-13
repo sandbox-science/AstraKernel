@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * @enum kerror_t
@@ -52,4 +53,3 @@ static inline bool kerr_is_err(kerror_t e)
  * Provide a formatted string based on the kernel error code.
  */
 const char* error_str(kerror_t error_code);
-

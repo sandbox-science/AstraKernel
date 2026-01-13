@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - Doxygen documentation for memory management and kernel functions.
 - Tests directory added to source build, with memory test functions moved to their own test file.
 - Custom division operation added to kernel.
+- Minimal logging helper (`log.h`) with optional tick prefix.
+- UART register map header (`uart.h`) and shared utilities (`utils.h`).
+- User input split into its own module for clarity (`input.c`).
+- LaTeX documentation chapters for kernel core and error handling.
 
 ### Changed
 - Moved Doxygen documentation from implementation files to header files.
@@ -20,10 +24,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 - Consolidated IRQ handling: moved irq files into interrupt file and updated testing / handlers accordingly.
 - Refactored `printf` handling and its testing; replaced `printf` calls with standardized types (via `<stdint.h>`).
 - Replaced tracking of `map_file.map` and `/docs/html` in repository.
+- Initialized stacks for multiple exception modes in startup assembly.
+- Refined kernel shell test hooks and gated them behind test builds.
+- Restructured LaTeX docs (chapter split, codebase overview, build modes).
+- Updated LaTeX styling (listings, captions, spacing, and page numbering).
 
 ### Removed
 - Old documentation excluded from Doxygen build.
 - Tracked files: `map_file.map`, `/docs/html` directory.
+
+### Fixed
+- Corrected February day count in datetime calculations.
+- Avoided signed-min overflow in `printf` integer formatting.
+- Added missing `stdbool.h` include for errno helpers.
 
 ## [0.1.0] – 2025‑08‑26
 ### Added
@@ -48,4 +61,3 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ### Merged
 - Feature branches: `printf`, `datetime`, bugfix for `getlines()`, and others.
-

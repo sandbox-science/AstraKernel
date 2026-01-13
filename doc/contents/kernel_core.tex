@@ -1,0 +1,172 @@
+% ------------------------------------------------
+% *** Section: Kernel Core ***
+% ------------------------------------------------
+\newpage
+\chapter{Kernel Core}
+
+\section{Exception Vector Table}
+\paragraph{Overview}
+AstraKernel installs an ARMv7-A exception vector table in the \texttt{.vectors}
+section and points \texttt{VBAR} at it during early boot. The vector table is
+aligned to 32 bytes and contains branch stubs for each exception type.
+
+\paragraph{Vector Table Layout}
+\begin{lstlisting}[language=C, caption={Vector table layout (A32).}, label={lst:vectors}]
+  /* 0x00 Reset        */   B   _start
+  /* 0x04 Undefined    */   B   undef_handler
+  /* 0x08 SWI/SVC      */   B   svc_entry
+  /* 0x0C PrefetchAbt  */   B   pabort_handler
+  /* 0x10 DataAbt      */   B   dabort_handler
+  /* 0x14 Reserved     */   B   reserved_handler
+  /* 0x18 IRQ          */   B   irq_entry
+  /* 0x1C FIQ          */   B   fiq_handler
+\end{lstlisting}
+
+\paragraph{Vector Entries}
+\begin{itemize}
+  \item Reset: branches to \texttt{\_start}.
+  \item Undefined instruction, Prefetch/Data Abort, Reserved, FIQ: default
+  handlers spin in a tight loop.
+  \item SVC: prints a short message and returns.
+  \item IRQ: jumps to a C handler in \texttt{src/kernel/interrupt.c}.
+\end{itemize}
+
+\paragraph{Implementation Notes}
+The boot code in \texttt{src/kernel/start.s} sets \texttt{VBAR} to the vector
+base, disables high vectors (SCTLR.V = 0), and installs mode-specific stacks
+for SVC/IRQ/FIQ/ABT/UND before entering \texttt{kernel\_main()}.
+
+\section{Boot Sequence}
+\paragraph{High-Level Flow}
+\begin{enumerate}
+  \item Set CPU mode to SVC and mask IRQ/FIQ.
+  \item Program \texttt{VBAR} to the vector base and disable high vectors.
+  \item Initialize stacks for SVC/IRQ/FIQ/ABT/UND.
+  \item Copy \texttt{.data} from load address to runtime address.
+  \item Zero \texttt{.bss}.
+  \item Jump to \texttt{kernel\_main()}.
+\end{enumerate}
+
+\paragraph{Mode Stacks}
+Each exception mode has its own stack to avoid clobbering the main kernel stack
+during fault handling. Stacks are reserved in \texttt{.bss} in
+\texttt{src/kernel/start.s}.
+
+\section{Interrupts and Timer}
+\paragraph{Overview}
+The kernel configures the SP804 timer (Timer0) and routes its interrupt through
+the PL190 VIC. The IRQ handler clears the timer interrupt and increments a
+global tick counter:
+
+\begin{itemize}
+  \item \texttt{systicks} lives in \texttt{src/kernel/interrupt.c} and is
+  incremented once per timer interrupt.
+  \item \texttt{interrupts\_init\_timer0()} programs Timer0 in periodic mode
+  and enables the VIC line.
+  \item \texttt{irq\_handler()} clears the timer interrupt and acknowledges the
+  VIC by writing \texttt{VIC\_VECTADDR = 0}.
+\end{itemize}
+
+\paragraph{Key Registers (VersatilePB)}
+\begin{itemize}
+  \item PL190 VIC base: \texttt{0x10140000}
+  \item SP804 Timer0 base: \texttt{0x101E2000}
+  \item Timer0 registers: \texttt{T0\_LOAD}, \texttt{T0\_CONTROL}, \texttt{T0\_INTCLR}, \texttt{T0\_MIS}
+\end{itemize}
+
+\paragraph{Initialization Sequence}
+\begin{enumerate}
+  \item Compute the reload value: \texttt{load = timer\_clk\_hz / tick\_hz}.
+  \item Program Timer0 in periodic mode with interrupts enabled.
+  \item Enable Timer0/1 IRQ line in the VIC.
+  \item Unmask CPU IRQs via \texttt{irq\_enable()}.
+\end{enumerate}
+
+\section{Linker Layout and Memory Map}
+\paragraph{Overview}
+The linker script \texttt{kernel.ld} defines the full memory layout:
+
+\begin{itemize}
+  \item \texttt{.vectors} at \texttt{0x00000000} (32-byte aligned).
+  \item \texttt{.text} at \texttt{0x00010000} (64 KiB offset).
+  \item \texttt{.rodata}, \texttt{.data}, \texttt{.bss} in ascending order.
+  \item \texttt{.ptables} reserves 16 KiB for MMU page tables.
+  \item Stack region at the top of RAM; heap below stacks.
+\end{itemize}
+
+\paragraph{Key Symbols}
+\begin{itemize}
+  \item \texttt{\_\_text\_start}, \texttt{\_\_text\_end}
+  \item \texttt{\_\_data\_start}, \texttt{\_\_data\_end}, \texttt{\_\_data\_load}
+  \item \texttt{\_\_bss\_start}, \texttt{\_\_bss\_end}
+  \item \texttt{\_\_stack\_top\_\_}, \texttt{\_\_stack\_bottom\_\_}
+  \item \texttt{\_\_heap\_start\_\_}, \texttt{\_\_heap\_end\_\_}, \texttt{\_\_heap\_size\_\_}
+\end{itemize}
+
+\section{Logging Macro}
+\paragraph{Overview}
+AstraKernel provides a minimal logging macro in \texttt{include/log.h}. It
+prefixes messages with a level tag and optionally includes the tick counter.
+
+\paragraph{Usage}
+\begin{lstlisting}[language=C, caption={Logging examples.}, label={lst:log_examples}]
+  #include "log.h"
+
+  KLOG(KLOG_INFO, "kernel_main start");
+  KLOG(KLOG_WARN, "timer fallback");
+  KLOG(KLOG_ERROR, "bad ptr=%p", ptr);
+\end{lstlisting}
+
+\paragraph{Tick Prefix}
+Define \texttt{KLOG\_USE\_TICKS} at compile time to include \texttt{systicks}
+in the log prefix. The kernel starts the timer and enables IRQs early in
+\texttt{kernel\_main()} when this flag is set.
+
+\section{Kernel Heap (kmalloc/kfree)}
+\paragraph{Overview}
+The kernel includes a simple first-fit allocator in \texttt{src/kernel/memory.c}.
+It manages a linked list of block headers stored inside the heap region.
+
+\paragraph{Behavior}
+\begin{itemize}
+  \item \texttt{kmalloc\_init(start, end)} sets up a single free block over the
+  heap range.
+  \item \texttt{kmalloc(size)} returns an aligned block; it splits larger free
+  blocks when possible.
+  \item \texttt{kfree(ptr)} marks a block free and merges adjacent free blocks.
+\end{itemize}
+
+\paragraph{Heap Layout}
+The heap begins at \texttt{\_\_heap\_start\_\_} (end of \texttt{.bss}) and ends
+at \texttt{\_\_heap\_end\_\_} (below the reserved kernel stacks), as defined in
+\texttt{kernel.ld}.
+
+\section{Panic and Error Codes}
+\paragraph{Overview}
+Critical failures call \texttt{kernel\_panic()} in \texttt{src/kernel/panic.c}.
+This prints a panic message (with an error code string) and halts the CPU using
+an infinite \texttt{wfi} loop with IRQ and FIQ masked.
+
+\paragraph{Error Codes}
+Kernel error codes are defined in \texttt{include/errno.h} and include
+\texttt{KERR\_NOMEM}, \texttt{KERR\_NO\_SPACE}, and \texttt{KERR\_INVAL}.
+
+\paragraph{Errno Helpers}
+The error module provides a tiny helper API:
+\begin{itemize}
+  \item \texttt{kerr\_is\_ok(e)} returns true when the error code is \texttt{KERR\_OK}.
+  \item \texttt{kerr\_is\_err(e)} returns true when the error code is negative.
+  \item \texttt{error\_str(e)} returns a static string describing the code.
+\end{itemize}
+
+\section{Tests}
+\paragraph{Overview}
+The kernel includes simple allocator tests in
+\texttt{src/kernel/tests/test\_memory.c}. To run them, build with:
+
+\begin{lstlisting}[language=bash, caption={Running kernel tests.}]
+  make KFLAGS="-DUSE_KTESTS"
+\end{lstlisting}
+
+When enabled, the test suite runs in \texttt{kernel\_main()} before returning to
+the interactive prompt.

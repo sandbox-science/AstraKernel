@@ -4,11 +4,13 @@
 #include "datetime.h"
 #include "printf.h"
 #include "clear.h"
-#include "string.h"
 #include "interrupt.h"
 #include "memory.h"
+#include "log.h"
 
-extern volatile uint64_t systicks; // this is declared in interrupt.c
+#ifdef USE_KTESTS
+#include "tests.h"
+#endif
 
 extern char __heap_start__;
 extern char __heap_end__;
@@ -53,70 +55,20 @@ void irq_sanity_check(void)
 
     if (before == after)
     {
-        puts("\r\nA1 Sanity PASS: no spurious IRQs\r\n");
+        KLOG(KLOG_INFO, "A1 Sanity PASS: no spurious IRQs");
     }
     else
     {
-        puts("\r\nA1 Sanity FAIL: unexpected IRQs\r\n");
-    }
-}
-
-// This function is for testing purposes.
-// It test that the timer interrupt is firing as expected.
-void not_main(void)
-{
-    puts("Memory allocation firing test!\r\n");
-
-    void *p  = kmalloc(10);
-    void *p2 = kmalloc(48);
-    printf("kmalloc(10) addr: %p\n", p);
-    printf("kmalloc(48) addr: %p\n", p2);
-    struct header *h = (struct header *)p - 1;
-    struct header *h2 = (struct header *)p2 - 1;
-    printf("size of kmalloc(10) %d\nsize of kmalloc(48) %d\n", h->size, h2->size);
-    kfree(p);
-    kfree(p2);
-
-    char *buf = kmalloc(1);
-    if (buf)
-    {
-        printf("buf addr: %p\n", buf);
-        buf[0] = 'a';
-        buf[1] = 'b';
-        buf[2] = 'c';
+        KLOG(KLOG_ERROR, "A1 Sanity FAIL: unexpected IRQs");
     }
 
-    printf("content -> %c%c%c\n addr -> %p\n%p\n%p\n", buf[0], buf[1], buf[2], &buf[0], &buf[1], &buf[2]);
-    printf("buf[0] add: %p\n", &buf[0]);
-    
-    unsigned heap_size_kb = (unsigned)(uintptr_t)&__heap_size__ / 1024;
-    printf("heap: start=0x%x end=0x%x size=%u KiB\r\n",
-           (unsigned)(uintptr_t)&__heap_start__,
-           (unsigned)(uintptr_t)&__heap_end__,
-           heap_size_kb);
-
-    puts("Time0 IRQ firing test!\r\n");
-
-    // Configure Timer0 for 100 Hz assuming 1 MHz timer clock in QEMU
-    interrupts_init_timer0(100, 1000000);
-
-    // Unmask CPU IRQs (I-bit = 0)
+#ifdef KLOG_USE_TICKS
     irq_enable();
-
-    // Test loop: print a dot every ~100 ticks
-    uint64_t last = 0;
-    for (;;)
-    {
-        if (systicks - last >= 100)
-        {
-            last = systicks;
-            puts(".");
-        }
-    }
+#endif
 }
 
 /* The following macros are for testing purposes. */
-#define     TIMER_TICK_TEST     not_main()
+#define     TIMER_TICK_TEST     ktests_timer_test()
 #define     SANITY_CHECK        irq_sanity_check()
 #define     CALL_SVC_0          __asm__ volatile ("svc #0")
 #define     KMALLOC_TEST        kmalloc_test()
@@ -125,7 +77,15 @@ void not_main(void)
 void kernel_main(void)
 {
     clear();
+    KLOG(KLOG_INFO, "kernel_main start");
     kmalloc_init(&__heap_start__, &__heap_end__);
+    KLOG(KLOG_INFO, "kmalloc init");
+
+#ifdef KLOG_USE_TICKS
+    interrupts_init_timer0(100, 1000000);
+    irq_enable();
+    KLOG(KLOG_INFO, "timer0 started for log ticks");
+#endif
 
     /* TESTS */
 #ifdef USE_KTESTS 
@@ -161,9 +121,9 @@ void kernel_main(void)
                 break;
 
             case 'b':
-                /* @todo Remove this section when testings are over. */
+#ifdef USE_KTESTS_FEATURE
                 #include <limits.h>
-                printf("UART base: 0x%p\n", (void *)0x101F1000);
+                printf("UART base: %p\n", (void *)0x101F1000);
                 printf("CPU Mode: %s\n", "Supervisor");
                 printf("Test signed: %d, unsigned: %u, hex: 0x%X\n", -42, 42U, 42U);
                 printf("Zero: %d\n", 0);
@@ -178,11 +138,17 @@ void kernel_main(void)
                 uint8_t *ptr = &number_address[0];
                 printf("Pointer address: %p\n", ptr);
                 printf("Long decimal: %ld\n", 2147483647L);
+                printf("Long unsigned: %lu\n", 4294967295UL);
+                printf("unsigned: %u\n", 4294967295U);
                 printf("Long hex: %lX\n", 0xFFFFFFFFL);
+#else
+                printf("Unknown command. Type 'h' for help.\r\n");
+#endif
                 break;
 
             case 'e':
-                /* @todo Remove this section when testings are over. */
+#ifdef USE_KTESTS_FEATURE
+                #include <string.h>
                 int result = strcmp("abc", "abc"); // Expect 0
                 printf("Expect 0 -> %d\r\n", result);
 
@@ -203,10 +169,13 @@ void kernel_main(void)
 
                 result = strcmp("\x01\x02\x04", "\x01\x02\x03"); // Expect 1
                 printf("Expect 1 -> %d\r\n", result);
+#else
+                printf("Unknown command. Type 'h' for help.\r\n");
+#endif
                 break;
 
             case 'q': // Check for exit command
-                printf("Exiting...\r\n");
+                KLOG(KLOG_INFO, "Exiting...");
                 is_running = false;
                 break;
 

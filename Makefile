@@ -17,7 +17,7 @@ INC_DIRS   := -I./include
 ARCH_FLAGS := -mcpu=cortex-a8 -marm
 
 CFLAGS := -std=c23 -ffreestanding -nostdlib -nostartfiles \
-          $(ARCH_FLAGS) -O2 -Wall -Wextra \
+          $(ARCH_FLAGS) -O2 -Wall -Wextra -Werror \
           -fno-builtin \
           $(INC_DIRS)
 

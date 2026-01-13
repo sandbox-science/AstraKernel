@@ -14,7 +14,7 @@ _Static_assert(sizeof(uint32_t) == 4, "uint32_t must be 4 bytes");
 
 uint32_t getdate(dateval *date_struct)
 {
-    static uint32_t day_arr[12] = {31, 27, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // Initialize only once
+    static uint32_t day_arr[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // Initialize only once
 
     if (date_struct != NULL)
     {
